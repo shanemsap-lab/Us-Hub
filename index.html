@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="theme-color" content="#FBF8F1" />
+<title>Us.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Public+Sans:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #FBF8F1; -webkit-tap-highlight-color: transparent; }
+  #app { min-height: 100vh; max-width: 680px; margin: 0 auto; }
+  .display { font-family: 'Fraunces', serif; font-weight: 650; font-size: 26px; color: #22333B; letter-spacing: -0.01em; }
+  .eyebrow { font-family: 'Public Sans', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A8371; margin: 0; }
+  .tabs { display: flex; gap: 4px; padding: 14px 18px 0; border-bottom: 2px solid #E4DECF; overflow-x: auto; }
+  .tab { font-family: 'Public Sans', sans-serif; font-size: 14px; font-weight: 600; color: #6E6754; background: none; border: none; padding: 8px 12px 10px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+  .tab.active { color: #1D5C63; border-bottom-color: #1D5C63; }
+  .card { background: #FFFFFF; border: 1.5px solid #E4DECF; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .ghost { background: none; border: 1.5px solid #E4DECF; border-radius: 999px; padding: 6px 12px; font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #22333B; cursor: pointer; }
+  .btn { background: #1D5C63; color: #FBF8F1; border: none; border-radius: 10px; padding: 10px 16px; font-family: 'Public Sans', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
+  .btn.sub { background: #EFE9DB; color: #22333B; }
+  .btn:focus-visible, .ghost:focus-visible, .tab:focus-visible { outline: 2px solid #B4552D; outline-offset: 2px; }
+  input, select, textarea { font-family: 'Public Sans', sans-serif; font-size: 15px; border: 1.5px solid #D8D2C4; border-radius: 10px; padding: 10px 12px; background: #FFF; color: #22333B; width: 100%; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid #1D5C63; border-color: #1D5C63; }
+  label { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #6E6754; display: block; margin: 10px 0 4px; }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+  .who { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #FFF; font-family: 'Public Sans', sans-serif; }
+  .empty { color: #8A8371; font-family: 'Public Sans', sans-serif; font-size: 14px; padding: 8px 0; }
+  h2 { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 650; color: #22333B; margin: 4px 0 10px; }
+  h3 { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8371; margin: 16px 0 6px; }
+  p, li { font-family: 'Public Sans', sans-serif; }
+  .del { background: none; border: none; color: #B4552D; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px; }
+  .chip { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; color: #1D5C63; background: #E4F0EF; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .chip.soon { color: #B4552D; background: #F7E5DC; }
+  .bignum { font-family: 'Fraunces', serif; font-weight: 650; font-size: 44px; color: #22333B; line-height: 1; }
+  .bell { position: relative; background: none; border: 1.5px solid #E4DECF; border-radius: 999px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; }
+  .badge { position: absolute; top: -5px; right: -5px; background: #B4552D; color: #FFF; font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; border-radius: 999px; min-width: 17px; height: 17px; line-height: 17px; text-align: center; padding: 0 3px; }
+  .comment { border-left: 3px solid #EFE9DB; padding: 6px 0 6px 10px; margin-top: 6px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+/* ============================================================
+   SETUP — fill in these two blocks, then push to GitHub Pages.
+   Full walkthrough in README.md
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyCdWsbhPYUbuCiOy3JSyCpMwwYnyU9NK3Y",
+  authDomain: "us-hub-smmb.firebaseapp.com",
+  projectId: "us-hub-smmb",
+  storageBucket: "us-hub-smmb.firebasestorage.app",
+  messagingSenderId: "130628007706",
+  appId: "1:130628007706:web:e892da439302b402e61ea3",
+};
+// Map each Gmail address to a person. Lowercase.
+const EMAILS = {
+  "shanemsap@gmail.com": "shane",
+  "mollymaclaughlin@gmail.com": "molly",
+};
+/* ============================================================ */
+
+import { h, render } from "https://esm.sh/preact@10.19.6";
+import { useState, useEffect, useCallback, useRef } from "https://esm.sh/preact@10.19.6/hooks";
+import htm from "https://esm.sh/htm@3.1.1";
+const html = htm.bind(h);
+
+const PEOPLE = {
+  shane: { name: "Shane", color: "#1D5C63" },
+  molly: { name: "Molly", color: "#B4552D" },
+};
+
+const SEED = {
+  anniversary: "2026-03-28",
+  nextVisit: null,
+  inbox: [],
+  milestones: [{ id: "m1", date: "2026-03-28", title: "First date 💘", who: "shane" }],
+  memories: [],
+  goals: [{ id: "g1", name: "House fund", target: 15000, weekly: 101, deposits: [] }],
+  bills: [],
+  dates: [],
+  criteria: [
+    { id: "c1", text: "Quiet neighborhood", type: "must", shane: true, molly: true },
+    { id: "c2", text: "Near I-95 but not right next to it", type: "must", shane: true, molly: true },
+    { id: "c3", text: "Driving distance of stuff", type: "must", shane: true, molly: true },
+    { id: "c4", text: "1.5+ baths (separate guest toilet)", type: "must", shane: false, molly: true },
+    { id: "c5", text: "A real work spot — 2nd bedroom OR a tuck-away nook", type: "must", shane: false, molly: true },
+    { id: "c6", text: "2 bedrooms (office / guest room combo)", type: "nice", shane: false, molly: true },
+  ],
+  houses: [],
+  board: [],
+  lists: [{ id: "dateideas", name: "Date ideas 💡", items: [] }],
+  trips: [],
+  activity: [],
+};
+
+// ---------- helpers ----------
+const uid = () => Math.random().toString(36).slice(2, 9);
+const fmt$ = (n) => Number(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+const todayStr = () => new Date().toISOString().slice(0, 10);
+const midnight = () => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
+const relDays = (dateStr) => {
+  const d = new Date(dateStr + "T12:00:00");
+  return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - midnight()) / 86400000);
+};
+const rel = (n) => n === 0 ? "today" : n === 1 ? "tomorrow" : n === -1 ? "yesterday" : n > 0 ? `in ${n}d` : `${-n}d ago`;
+const relTs = (ts) => {
+  const mins = Math.round((Date.now() - ts) / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.round(hrs / 24)}d ago`;
+};
+const fmtDate = (d) => d ? new Date(d + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+const clampDOM = (day, y, m) => Math.min(day, new Date(y, m + 1, 0).getDate());
+function nextOccurrence(dayOfMonth) {
+  const now = new Date();
+  let y = now.getFullYear(), m = now.getMonth();
+  let d = new Date(y, m, clampDOM(dayOfMonth, y, m));
+  if (d < midnight()) d = new Date(y, m + 1, clampDOM(dayOfMonth, y, m + 1));
+  return d;
+}
+function nextMonthiversary(annStr) {
+  const ann = new Date(annStr + "T12:00:00");
+  const d = nextOccurrence(ann.getDate());
+  const months = (d.getFullYear() - ann.getFullYear()) * 12 + (d.getMonth() - ann.getMonth());
+  return { date: d, months, days: Math.round((d - midnight()) / 86400000) };
+}
+// Pull a readable address out of a Zillow / Realtor / Redfin URL
+function addressFromLink(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname;
+    let slug = "";
+    if (/zillow\.com$/.test(host) || host.includes("zillow")) {
+      const m = u.pathname.match(/homedetails\/([^/]+)\//);
+      if (m) slug = m[1];
+    } else if (host.includes("realtor.com")) {
+      const m = u.pathname.match(/realestateandhomes-detail\/([^/]+)/);
+      if (m) slug = m[1];
+    } else if (host.includes("redfin.com")) {
+      const parts = u.pathname.split("/").filter(Boolean);
+      slug = parts.find((p) => /\d/.test(p) && p.includes("-")) || "";
+    }
+    if (!slug) return "";
+    return decodeURIComponent(slug)
+      .replace(/[_-]+/g, " ")
+      .replace(/\s+\d{5}(?:\s.*)?$/, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  } catch { return ""; }
+}
+// localStorage that won't crash in restricted contexts
+const safeLS = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+};
+
+// ---------- firebase ----------
+const configured = !String(firebaseConfig.apiKey).includes("PASTE");
+let db = null, auth = null, fb = null;
+async function initFirebase() {
+  const [{ initializeApp }, authMod, fsMod] = await Promise.all([
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),
+  ]);
+  const app = initializeApp(firebaseConfig);
+  auth = authMod.getAuth(app);
+  db = fsMod.getFirestore(app);
+  fb = { ...authMod, ...fsMod };
+}
+
+// ---------- atoms ----------
+const Who = ({ who, initialOnly }) => html`
+  <span class="who" style=${{ background: who === "both" ? "#22333B" : PEOPLE[who].color }}>
+    ${who === "both" ? "Both" : initialOnly ? PEOPLE[who].name[0] : PEOPLE[who].name}
+  </span>`;
+
+const Stars = ({ value, onChange, color, readOnly }) => html`
+  <span style=${{ display: "inline-flex", gap: "2px" }}>
+    ${[1, 2, 3, 4, 5].map((n) => html`
+      <button key=${n} onClick=${() => !readOnly && onChange && onChange(n === value ? 0 : n)}
+        aria-label="${n} star"
+        style=${{ background: "none", border: "none", padding: 0, cursor: readOnly ? "default" : "pointer", fontSize: "18px", lineHeight: 1, color: n <= value ? color : "#D8D2C4" }}>★</button>`)}
+  </span>`;
+
+const GoalFill = ({ pct, size = 96 }) => {
+  const clamped = Math.max(0, Math.min(1, pct));
+  const hgt = 92 * clamped;
+  const clip = "clip" + Math.round(clamped * 100);
+  return html`
+    <svg viewBox="0 0 140 120" width=${size} height=${size * 120 / 140} aria-label="${Math.round(clamped * 100)}% of goal">
+      <defs><clipPath id=${clip}><path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" /></clipPath></defs>
+      <path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" fill="#FFFFFF" stroke="#22333B" stroke-width="3" stroke-linejoin="round" />
+      <g clip-path="url(#${clip})">
+        <rect x="0" y=${112 - hgt} width="140" height=${hgt + 4} fill="#1D5C63" opacity="0.9" />
+        <path d="M0 ${112 - hgt} q 17 -7 35 0 t 35 0 t 35 0 t 35 0 V 116 H 0 Z" fill="#1D5C63" />
+      </g>
+      <path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" fill="none" stroke="#22333B" stroke-width="3" stroke-linejoin="round" />
+      <rect x="60" y="80" width="20" height="32" fill="none" stroke="#22333B" stroke-width="2.5" />
+    </svg>`;
+};
+
+// Reusable comment thread
+function Comments({ items = [], onAdd, me }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const submit = () => {
+    if (!text.trim()) return;
+    onAdd(text.trim());
+    setText("");
+  };
+  return html`
+    <div style=${{ marginTop: "8px" }}>
+      <button class="ghost" onClick=${() => setOpen(!open)}>
+        💬 ${items.length || ""} ${items.length === 1 ? "comment" : "comments"}
+      </button>
+      ${open && html`
+        <div>
+          ${items.map((c) => html`
+            <div key=${c.id} class="comment">
+              <p style=${{ fontSize: "13px", color: "#22333B", margin: 0 }}>${c.text}</p>
+              <p style=${{ fontSize: "11px", color: "#8A8371", margin: "2px 0 0" }}>
+                <${Who} who=${c.who} initialOnly /> · ${relTs(c.ts)}
+              </p>
+            </div>`)}
+          <div class="row" style=${{ marginTop: "8px" }}>
+            <input value=${text} onInput=${(e) => setText(e.target.value)}
+              onKeyDown=${(e) => e.key === "Enter" && submit()} placeholder="Say something…" />
+            <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${submit}>Post</button>
+          </div>
+        </div>`}
+    </div>`;
+}
+
+// ---------- app ----------
+function App() {
+  const [phase, setPhase] = useState(configured ? "loading" : "setup");
+  const [user, setUser] = useState(null);
+  const [data, setData] = useState(null);
+  const [tab, setTab] = useState("today");
+  const [showFeed, setShowFeed] = useState(false);
+  const [lastSeen, setLastSeen] = useState(Number(safeLS.get("lastSeen") || 0));
+  const [notifOn, setNotifOn] = useState(typeof Notification !== "undefined" && Notification.permission === "granted");
+  const prevActIds = useRef(new Set());
+  const meRef = useRef(null);
+
+  const me = user ? EMAILS[(user.email || "").toLowerCase()] : null;
+  meRef.current = me;
+
+  useEffect(() => {
+    if (!configured) return;
+    (async () => {
+      await initFirebase();
+      fb.onAuthStateChanged(auth, (u) => {
+        setUser(u);
+        setPhase(u ? "app" : "signin");
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "app" || !me) return;
+    const ref = fb.doc(db, "hub", "main");
+    const unsub = fb.onSnapshot(ref, async (snap) => {
+      if (!snap.exists()) {
+        await fb.setDoc(ref, SEED);
+        return;
+      }
+      const d = { ...structuredClone(SEED), ...snap.data() };
+      // foreground notification for the other person's new activity
+      if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+        (d.activity || []).forEach((a) => {
+          if (!prevActIds.current.has(a.id) && prevActIds.current.size > 0 && a.who !== meRef.current) {
+            try { new Notification("Us.", { body: `${PEOPLE[a.who].name} ${a.text}` }); } catch {}
+          }
+        });
+      }
+      prevActIds.current = new Set((d.activity || []).map((a) => a.id));
+      setData(d);
+    });
+    return unsub;
+  }, [phase, me]);
+
+  const update = useCallback((fn, actText) => {
+    setData((prev) => {
+      const next = fn(structuredClone(prev));
+      if (actText) {
+        next.activity = [{ id: uid(), who: meRef.current, text: actText, ts: Date.now() }, ...(next.activity || [])].slice(0, 50);
+      }
+      fb.setDoc(fb.doc(db, "hub", "main"), next);
+      return next;
+    });
+  }, []);
+
+  const signIn = async () => {
+    const provider = new fb.GoogleAuthProvider();
+    try { await fb.signInWithPopup(auth, provider); }
+    catch { try { await fb.signInWithRedirect(auth, provider); } catch (e) { alert("Sign-in failed: " + e.message); } }
+  };
+
+  const openFeed = () => {
+    setShowFeed(!showFeed);
+    const now = Date.now();
+    setLastSeen(now);
+    safeLS.set("lastSeen", String(now));
+  };
+
+  const askNotif = async () => {
+    if (typeof Notification === "undefined") return alert("This browser doesn't support notifications.");
+    const p = await Notification.requestPermission();
+    setNotifOn(p === "granted");
+  };
+
+  if (phase === "setup") return html`
+    <div style=${{ padding: "48px 24px", textAlign: "center" }}>
+      <h1 class="display">Us.</h1>
+      <p style=${{ color: "#5B5647", fontSize: "14px" }}>Almost there — open <code>index.html</code>, paste your Firebase config and your two Gmail addresses into the SETUP block at the top, then reload. Full steps in the README.</p>
+    </div>`;
+
+  if (phase === "loading" || (phase === "app" && !data)) return html`
+    <p style=${{ padding: "24px", fontFamily: "Public Sans, sans-serif" }}>Loading your hub…</p>`;
+
+  if (phase === "signin") return html`
+    <div style=${{ padding: "48px 24px", textAlign: "center" }}>
+      <p class="eyebrow">an hour apart · never far</p>
+      <h1 class="display" style=${{ margin: "8px 0 6px" }}>Us.</h1>
+      <p style=${{ color: "#5B5647", marginBottom: "28px", fontSize: "14px" }}>Two people, one hour of highway, zero excuses.</p>
+      <button class="btn" onClick=${signIn}>Sign in with Google</button>
+    </div>`;
+
+  if (!me) return html`
+    <div style=${{ padding: "48px 24px", textAlign: "center" }}>
+      <h1 class="display">Hm.</h1>
+      <p style=${{ color: "#5B5647", fontSize: "14px" }}>${user.email} isn't on the list. If it should be, add it to the EMAILS block in index.html.</p>
+      <button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out</button>
+    </div>`;
+
+  const unread = (data.activity || []).filter((a) => a.ts > lastSeen && a.who !== me).length;
+
+  return html`
+    <div>
+      <header style=${{ padding: "18px 18px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <p class="eyebrow">one hour of 95 · zero distance</p>
+          <h1 class="display" style=${{ margin: 0 }}>Us.</h1>
+        </div>
+        <div style=${{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <button class="bell" onClick=${openFeed} aria-label="Activity">
+            🔔${unread > 0 && html`<span class="badge">${unread}</span>`}
+          </button>
+          <button class="ghost" onClick=${() => fb.signOut(auth)}>${PEOPLE[me].name} · out</button>
+        </div>
+      </header>
+
+      ${showFeed && html`
+        <div class="card" style=${{ margin: "12px 18px 0" }}>
+          <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <h2 style=${{ margin: 0 }}>What's new</h2>
+            ${!notifOn && html`<button class="ghost" onClick=${askNotif}>enable alerts</button>`}
+          </div>
+          ${(data.activity || []).length === 0 && html`<p class="empty">Quiet so far. Everything you two do shows up here.</p>`}
+          ${(data.activity || []).slice(0, 25).map((a) => html`
+            <div key=${a.id} style=${{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
+              <span style=${{ fontSize: "13px", color: "#22333B" }}>
+                <${Who} who=${a.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${a.text}</span>
+              </span>
+              <span style=${{ fontSize: "12px", color: "#8A8371", whiteSpace: "nowrap" }}>${relTs(a.ts)}</span>
+            </div>`)}
+        </div>`}
+
+      <nav class="tabs">
+        ${[["today", "Today"], ["us", "Us"], ["money", "Money"], ["house", "House"], ["lists", "Lists"], ["plans", "Plans"]].map(([k, label]) => html`
+          <button key=${k} class=${tab === k ? "tab active" : "tab"} onClick=${() => setTab(k)}>${label}</button>`)}
+      </nav>
+
+      <main style=${{ padding: "16px 18px 40px" }}>
+        ${tab === "today" && html`<${Today} data=${data} update=${update} me=${me} />`}
+        ${tab === "us" && html`<${Us} data=${data} update=${update} me=${me} />`}
+        ${tab === "money" && html`<${Money} data=${data} update=${update} me=${me} />`}
+        ${tab === "house" && html`<${House} data=${data} update=${update} me=${me} />`}
+        ${tab === "lists" && html`<${StoreLists} data=${data} update=${update} me=${me} />`}
+        ${tab === "plans" && html`<${Plans} data=${data} update=${update} me=${me} />`}
+      </main>
+    </div>`;
+}
+
+// ---------- TODAY ----------
+function Today({ data, update, me }) {
+  const [dump, setDump] = useState("");
+  const [visitDate, setVisitDate] = useState("");
+  const [visitNote, setVisitNote] = useState("");
+  const [editingVisit, setEditingVisit] = useState(false);
+
+  const daysTogether = -relDays(data.anniversary);
+  const mv = nextMonthiversary(data.anniversary);
+  const visit = data.nextVisit;
+  const visitDays = visit ? relDays(visit.date) : null;
+  const visitPassed = visit && visitDays < 0;
+
+  const horizon = [];
+  if (visit && visitDays >= 0 && visitDays <= 30)
+    horizon.push({ days: visitDays, label: `See each other${visit.note ? " — " + visit.note : ""} 🫶`, date: visit.date });
+  if (mv.days <= 30)
+    horizon.push({ days: mv.days, label: `${mv.months} months together 🎉`, date: mv.date.toISOString().slice(0, 10) });
+  (data.bills || []).forEach((b) => {
+    const due = nextOccurrence(b.dueDay);
+    const days = Math.round((due - midnight()) / 86400000);
+    if (days <= 21) horizon.push({ days, label: `${b.name}${b.amount ? " · " + fmt$(b.amount) : ""}`, date: due.toISOString().slice(0, 10) });
+  });
+  (data.dates || []).forEach((d) => {
+    const days = relDays(d.date);
+    if (days >= 0 && days <= 30) horizon.push({ days, label: d.title, date: d.date });
+  });
+  horizon.sort((a, b) => a.days - b.days);
+
+  const saveVisit = () => {
+    if (!visitDate) return;
+    update((d) => { d.nextVisit = { date: visitDate, note: visitNote.trim() }; return d; },
+      `set the next visit: ${fmtDate(visitDate)}${visitNote ? " — " + visitNote.trim() : ""}`);
+    setEditingVisit(false); setVisitDate(""); setVisitNote("");
+  };
+  const addDump = () => {
+    if (!dump.trim()) return;
+    const t = dump.trim();
+    update((d) => { d.inbox.unshift({ id: uid(), text: t, who: me, date: todayStr() }); return d; }, `dumped a thought: "${t.slice(0, 40)}${t.length > 40 ? "…" : ""}"`);
+    setDump("");
+  };
+
+  return html`
+    <div>
+      <div class="card" style=${{ display: "flex", gap: "18px", alignItems: "center", justifyContent: "space-around", textAlign: "center", flexWrap: "wrap" }}>
+        <div>
+          <p class="bignum">${daysTogether}</p>
+          <p class="eyebrow" style=${{ marginTop: "4px" }}>days of us</p>
+        </div>
+        <div>
+          ${visit && !visitPassed ? html`
+            <p class="bignum" style=${{ color: "#1D5C63" }}>${visitDays === 0 ? "🎉" : visitDays}</p>
+            <p class="eyebrow" style=${{ marginTop: "4px" }}>${visitDays === 0 ? "you're together today" : "days until you're together"}</p>
+          ` : html`
+            <p class="bignum" style=${{ color: "#D8D2C4" }}>?</p>
+            <p class="eyebrow" style=${{ marginTop: "4px" }}>next visit not set</p>
+          `}
+        </div>
+      </div>
+
+      <div class="card">
+        <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <h2 style=${{ margin: 0 }}>Next time together</h2>
+          <button class="ghost" onClick=${() => setEditingVisit(!editingVisit)}>${visit ? "change" : "set it"}</button>
+        </div>
+        ${visit && !editingVisit && html`
+          <p style=${{ fontSize: "14px", color: "#44403A", margin: "8px 0 0" }}>
+            ${fmtDate(visit.date)} · <strong>${rel(visitDays)}</strong>
+            ${visit.note && html`<span style=${{ color: "#6E6754" }}> — ${visit.note}</span>`}
+            ${visitPassed && html`<span style=${{ color: "#B4552D" }}> · that one's past — set the next one 💛</span>`}
+          </p>`}
+        ${!visit && !editingVisit && html`<p class="empty">Time blindness antidote #1: always know the next time you'll see each other.</p>`}
+        ${editingVisit && html`
+          <div>
+            <div class="row" style=${{ marginTop: "8px" }}>
+              <span><label>Date</label><input type="date" value=${visitDate} onInput=${(e) => setVisitDate(e.target.value)} /></span>
+              <span><label>Plan (optional)</label><input value=${visitNote} onInput=${(e) => setVisitNote(e.target.value)} placeholder="her place, weekend" /></span>
+            </div>
+            <button class="btn" style=${{ marginTop: "12px" }} onClick=${saveVisit}>Save</button>
+          </div>`}
+      </div>
+
+      <div class="card">
+        <h2>Next 3 weeks</h2>
+        ${horizon.length === 0 && html`<p class="empty">Clear horizon. Nothing due, nothing scheduled.</p>`}
+        ${horizon.slice(0, 8).map((hz, i) => html`
+          <div key=${i} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
+            <span style=${{ fontSize: "14px", color: "#22333B", flex: 1 }}>${hz.label}</span>
+            <span class=${hz.days <= 3 ? "chip soon" : "chip"}>${rel(hz.days)} · ${fmtDate(hz.date)}</span>
+          </div>`)}
+      </div>
+
+      <div class="card">
+        <h2>Brain dump</h2>
+        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Catch the thought before it escapes. Sort it later. Or never.</p>
+        <div class="row">
+          <input value=${dump} onInput=${(e) => setDump(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addDump()} placeholder="that thing I keep forgetting to tell you…" />
+          <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addDump}>Dump</button>
+        </div>
+        ${(data.inbox || []).map((it) => html`
+          <div key=${it.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
+            <span style=${{ fontSize: "14px", color: "#22333B" }}>
+              <${Who} who=${it.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${it.text}</span>
+            </span>
+            <span style=${{ fontSize: "12px", color: "#8A8371", whiteSpace: "nowrap" }}>
+              ${rel(relDays(it.date))}
+              <button class="del" onClick=${() => update((d) => { d.inbox = d.inbox.filter((x) => x.id !== it.id); return d; })}>✕</button>
+            </span>
+          </div>`)}
+      </div>
+    </div>`;
+}
+
+// ---------- US ----------
+function Us({ data, update, me }) {
+  const [msTitle, setMsTitle] = useState("");
+  const [msDate, setMsDate] = useState("");
+  const [memText, setMemText] = useState("");
+  const [annEdit, setAnnEdit] = useState(false);
+  const [annVal, setAnnVal] = useState(data.anniversary);
+
+  const addMilestone = () => {
+    if (!msTitle.trim() || !msDate) return;
+    const t = msTitle.trim();
+    update((d) => {
+      d.milestones.push({ id: uid(), title: t, date: msDate, who: me });
+      d.milestones.sort((a, b) => a.date.localeCompare(b.date));
+      return d;
+    }, `added a milestone: ${t}`);
+    setMsTitle(""); setMsDate("");
+  };
+  const addMemory = () => {
+    if (!memText.trim()) return;
+    const t = memText.trim();
+    update((d) => { d.memories.unshift({ id: uid(), text: t, who: me, date: todayStr() }); return d; }, "jarred a memory 🫙");
+    setMemText("");
+  };
+
+  return html`
+    <div>
+      <div class="card">
+        <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <h2 style=${{ margin: 0 }}>Day zero</h2>
+          ${!annEdit && html`<button class="ghost" onClick=${() => { setAnnVal(data.anniversary); setAnnEdit(true); }}>edit</button>`}
+        </div>
+        ${annEdit ? html`
+          <div class="row" style=${{ marginTop: "8px", alignItems: "flex-end" }}>
+            <span><label>First date</label><input type="date" value=${annVal} onInput=${(e) => setAnnVal(e.target.value)} /></span>
+            <button class="btn" style=${{ flex: "0 0 auto" }} onClick=${() => { update((d) => { d.anniversary = annVal; return d; }, "corrected day zero"); setAnnEdit(false); }}>Save</button>
+          </div>` : html`
+          <p style=${{ fontSize: "14px", color: "#44403A", margin: "8px 0 0" }}>
+            ${new Date(data.anniversary + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+            ${" "}· ${-relDays(data.anniversary)} days and counting. This date drives every counter in the app.
+          </p>`}
+      </div>
+
+      <div class="card">
+        <h2>Milestones</h2>
+        <div style=${{ borderLeft: "3px solid #E4DECF", paddingLeft: "14px", marginLeft: "4px" }}>
+          ${(data.milestones || []).map((m) => html`
+            <div key=${m.id} style=${{ position: "relative", padding: "6px 0 14px" }}>
+              <span style=${{ position: "absolute", left: "-21px", top: "12px", width: "11px", height: "11px", borderRadius: "50%", background: PEOPLE[m.who].color, border: "2px solid #FBF8F1" }}></span>
+              <p style=${{ fontSize: "15px", fontWeight: 600, color: "#22333B", margin: 0 }}>${m.title}</p>
+              <p style=${{ fontSize: "12px", color: "#8A8371", margin: "2px 0 0" }}>
+                ${new Date(m.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · ${rel(relDays(m.date))}
+                <button class="del" onClick=${() => update((d) => { d.milestones = d.milestones.filter((x) => x.id !== m.id); return d; })}>✕</button>
+              </p>
+            </div>`)}
+        </div>
+        <div class="row" style=${{ marginTop: "8px" }}>
+          <span style=${{ flex: 2 }}><label>What happened</label><input value=${msTitle} onInput=${(e) => setMsTitle(e.target.value)} placeholder="Said I love you, met the dogs…" /></span>
+          <span><label>When</label><input type="date" value=${msDate} onInput=${(e) => setMsDate(e.target.value)} /></span>
+        </div>
+        <button class="btn" style=${{ marginTop: "12px" }} onClick=${addMilestone}>Add milestone</button>
+      </div>
+
+      <div class="card">
+        <h2>Memory jar</h2>
+        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Small good moments, logged before the ADHD eats them. Future-you will love past-you for this.</p>
+        <div class="row">
+          <input value=${memText} onInput=${(e) => setMemText(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addMemory()} placeholder="She laughed so hard at…" />
+          <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addMemory}>Jar it</button>
+        </div>
+        ${(data.memories || []).map((m) => html`
+          <div key=${m.id} style=${{ padding: "10px 0", borderBottom: "1px solid #F0EBDD" }}>
+            <p style=${{ fontSize: "14px", color: "#22333B", margin: 0 }}>${m.text}</p>
+            <p style=${{ fontSize: "12px", color: "#8A8371", margin: "4px 0 0" }}>
+              <${Who} who=${m.who} initialOnly /> · ${fmtDate(m.date)} · ${rel(relDays(m.date))}
+              <button class="del" onClick=${() => update((d) => { d.memories = d.memories.filter((x) => x.id !== m.id); return d; })}>✕</button>
+            </p>
+          </div>`)}
+      </div>
+    </div>`;
+}
+
+// ---------- MONEY ----------
+function Money({ data, update, me }) {
+  const [goalForm, setGoalForm] = useState({ name: "", target: "", weekly: "" });
+  const [depDrafts, setDepDrafts] = useState({});
+
+  const addGoal = () => {
+    if (!goalForm.name.trim() || !Number(goalForm.target)) return;
+    const nm = goalForm.name.trim();
+    update((d) => {
+      d.goals.push({ id: uid(), name: nm, target: Number(goalForm.target), weekly: Number(goalForm.weekly) || 0, deposits: [] });
+      return d;
+    }, `added a goal: ${nm}`);
+    setGoalForm({ name: "", target: "", weekly: "" });
+  };
+  const addDeposit = (goalId) => {
+    const g = data.goals.find((x) => x.id === goalId);
+    const amt = Number(depDrafts[goalId] || g.weekly);
+    if (!amt || amt <= 0) return;
+    update((d) => {
+      d.goals.find((x) => x.id === goalId).deposits.unshift({ id: uid(), who: me, amount: amt, date: todayStr() });
+      return d;
+    }, `put ${fmt$(amt)} into ${g.name}`);
+    setDepDrafts({ ...depDrafts, [goalId]: "" });
+  };
+
+  return html`
+    <div>
+      ${(data.goals || []).map((g) => {
+        const total = g.deposits.reduce((s, x) => s + Number(x.amount || 0), 0);
+        const pct = g.target > 0 ? total / g.target : 0;
+        const weeksLeft = g.weekly > 0 && g.target > total ? Math.ceil((g.target - total) / g.weekly) : 0;
+        const eta = new Date(Date.now() + weeksLeft * 7 * 86400000);
+        return html`
+          <div key=${g.id} class="card">
+            <div style=${{ display: "flex", gap: "16px", alignItems: "center" }}>
+              <${GoalFill} pct=${pct} />
+              <div style=${{ flex: 1 }}>
+                <h2 style=${{ margin: "0 0 2px" }}>${g.name}</h2>
+                <p style=${{ fontFamily: "Fraunces, serif", fontSize: "26px", fontWeight: 650, color: "#1D5C63", margin: 0 }}>${fmt$(total)}</p>
+                <p style=${{ fontSize: "13px", color: "#6E6754", margin: "2px 0 0" }}>of ${fmt$(g.target)} (${Math.round(pct * 100)}%)</p>
+                ${weeksLeft > 0 && html`<p style=${{ fontSize: "12px", color: "#8A8371", margin: "4px 0 0" }}>~${weeksLeft} wks at ${fmt$(g.weekly)}/wk · ${eta.toLocaleDateString("en-US", { month: "short", year: "numeric" })}</p>`}
+              </div>
+            </div>
+            <div class="row" style=${{ marginTop: "12px" }}>
+              <input type="number" value=${depDrafts[g.id] || ""} onInput=${(e) => setDepDrafts({ ...depDrafts, [g.id]: e.target.value })} placeholder=${g.weekly ? String(g.weekly) : "amount"} />
+              <button class="btn" style=${{ flex: "0 0 auto" }} onClick=${() => addDeposit(g.id)}>Log as ${PEOPLE[me].name}</button>
+            </div>
+            ${g.deposits.slice(0, 4).map((dep) => html`
+              <div key=${dep.id} style=${{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #F0EBDD", fontSize: "13px", fontFamily: "Public Sans, sans-serif" }}>
+                <span><${Who} who=${dep.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${fmt$(dep.amount)}</span></span>
+                <span style=${{ color: "#8A8371" }}>
+                  ${rel(relDays(dep.date))}
+                  <button class="del" onClick=${() => update((d) => { const gg = d.goals.find((x) => x.id === g.id); gg.deposits = gg.deposits.filter((y) => y.id !== dep.id); return d; })}>✕</button>
+                </span>
+              </div>`)}
+            ${g.deposits.length > 4 && html`<p style=${{ fontSize: "12px", color: "#8A8371", margin: "6px 0 0" }}>+ ${g.deposits.length - 4} earlier deposits</p>`}
+            <button class="del" style=${{ marginTop: "8px" }} onClick=${() => { if (confirm(`Delete goal "${g.name}" and its history?`)) update((d) => { d.goals = d.goals.filter((x) => x.id !== g.id); return d; }, `deleted the goal ${g.name}`); }}>delete goal</button>
+          </div>`;
+      })}
+
+      <div class="card">
+        <h2>New goal</h2>
+        <div class="row">
+          <span style=${{ flex: 2 }}><label>Saving for</label><input value=${goalForm.name} onInput=${(e) => setGoalForm({ ...goalForm, name: e.target.value })} placeholder="Emergency fund, big trip…" /></span>
+          <span><label>Target</label><input type="number" value=${goalForm.target} onInput=${(e) => setGoalForm({ ...goalForm, target: e.target.value })} placeholder="5000" /></span>
+          <span><label>Per week</label><input type="number" value=${goalForm.weekly} onInput=${(e) => setGoalForm({ ...goalForm, weekly: e.target.value })} placeholder="50" /></span>
+        </div>
+        <button class="btn" style=${{ marginTop: "12px" }} onClick=${addGoal}>Add goal</button>
+      </div>
+
+      <${Bills} data=${data} update=${update} />
+    </div>`;
+}
+
+// ---------- Bills ----------
+function Bills({ data, update }) {
+  const [form, setForm] = useState({ name: "", amount: "", dueDay: "1", who: "both" });
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  const add = () => {
+    if (!form.name.trim()) return;
+    const nm = form.name.trim();
+    update((d) => {
+      d.bills.push({ id: uid(), name: nm, amount: Number(form.amount) || 0, dueDay: Math.max(1, Math.min(31, Number(form.dueDay) || 1)), who: form.who });
+      return d;
+    }, `added a bill: ${nm}`);
+    setForm({ name: "", amount: "", dueDay: "1", who: "both" });
+  };
+  const sorted = [...(data.bills || [])].sort((a, b) => nextOccurrence(a.dueDay) - nextOccurrence(b.dueDay));
+  const monthlyTotal = sorted.reduce((s, b) => s + (b.amount || 0), 0);
+
+  return html`
+    <div class="card">
+      <h2>Joint bills</h2>
+      ${sorted.length > 0 && html`<p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>${fmt$(monthlyTotal)} / month across ${sorted.length} bill${sorted.length > 1 ? "s" : ""} — these also show on Today's horizon</p>`}
+      ${sorted.length === 0 && html`<p class="empty">No bills yet. Anything you split — add it once, it reminds you forever.</p>`}
+      ${sorted.map((b) => {
+        const due = nextOccurrence(b.dueDay);
+        const days = Math.round((due - midnight()) / 86400000);
+        return html`
+          <div key=${b.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
+            <span style=${{ fontSize: "14px", color: "#22333B", fontFamily: "Public Sans, sans-serif" }}>
+              <strong>${b.name}</strong>
+              ${b.amount > 0 && html`<span style=${{ color: "#6E6754" }}> · ${fmt$(b.amount)}</span>`}
+              <span style=${{ marginLeft: "8px" }}><${Who} who=${b.who} /></span>
+            </span>
+            <span style=${{ whiteSpace: "nowrap" }}>
+              <span class=${days <= 5 ? "chip soon" : "chip"}>${rel(days)} · ${due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+              <button class="del" onClick=${() => update((d) => { d.bills = d.bills.filter((x) => x.id !== b.id); return d; })}>✕</button>
+            </span>
+          </div>`;
+      })}
+      <div class="row" style=${{ marginTop: "12px" }}>
+        <span style=${{ flex: 2 }}><label>Bill</label><input value=${form.name} onInput=${set("name")} placeholder="Internet" /></span>
+        <span><label>Amount</label><input type="number" value=${form.amount} onInput=${set("amount")} placeholder="80" /></span>
+      </div>
+      <div class="row">
+        <span><label>Due day of month</label><input type="number" min="1" max="31" value=${form.dueDay} onInput=${set("dueDay")} /></span>
+        <span><label>Whose bill</label>
+          <select value=${form.who} onChange=${set("who")}>
+            <option value="both">Both (joint)</option>
+            <option value="shane">Shane</option>
+            <option value="molly">Molly</option>
+          </select>
+        </span>
+      </div>
+      <button class="btn" style=${{ marginTop: "12px" }} onClick=${add}>Add bill</button>
+    </div>`;
+}
+
+// ---------- HOUSE ----------
+function House({ data, update, me }) {
+  const [text, setText] = useState("");
+  const [type, setType] = useState("must");
+  const [form, setForm] = useState({ address: "", link: "", price: "", notes: "" });
+  const [pinText, setPinText] = useState("");
+
+  const onLink = (e) => {
+    const link = e.target.value;
+    const next = { ...form, link };
+    if (!form.address.trim()) {
+      const parsed = addressFromLink(link);
+      if (parsed) next.address = parsed;
+    }
+    setForm(next);
+  };
+
+  const addCriterion = () => {
+    if (!text.trim()) return;
+    const t = text.trim();
+    update((d) => { d.criteria.push({ id: uid(), text: t, type, shane: me === "shane", molly: me === "molly" }); return d; }, `added to the house list: ${t}`);
+    setText("");
+  };
+  const addHouse = () => {
+    if (!form.address.trim() && !form.link.trim()) return;
+    const label = form.address.trim() || "a mystery house";
+    update((d) => { d.houses.unshift({ id: uid(), ...form, addedBy: me, shaneRating: 0, mollyRating: 0, status: "saved", comments: [] }); return d; }, `saved a house: ${label}`);
+    setForm({ address: "", link: "", price: "", notes: "" });
+  };
+  const addPin = () => {
+    const raw = pinText.trim();
+    if (!raw) return;
+    const isUrl = /^https?:\/\//i.test(raw);
+    update((d) => { d.board.unshift({ id: uid(), text: isUrl ? "" : raw, url: isUrl ? raw : "", who: me }); return d; }, "pinned to the vision board");
+    setPinText("");
+  };
+
+  const statuses = ["saved", "want to see", "toured", "no"];
+  const section = (t, title) => {
+    const items = (data.criteria || []).filter((c) => c.type === t);
+    return html`
+      <div>
+        <h3>${title}</h3>
+        ${items.length === 0 && html`<p class="empty">Nothing here yet.</p>`}
+        ${items.map((c) => html`
+          <div key=${c.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
+            <span style=${{ fontSize: "15px", color: "#22333B", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${c.text}</span>
+            <span style=${{ display: "flex", gap: "6px", alignItems: "center" }}>
+              ${["shane", "molly"].map((w) => html`
+                <button key=${w} title="${PEOPLE[w].name} agrees"
+                  onClick=${() => update((d) => { const it = d.criteria.find((x) => x.id === c.id); it[w] = !it[w]; return d; })}
+                  style=${{ width: "26px", height: "26px", borderRadius: "50%", border: `2px solid ${PEOPLE[w].color}`, background: c[w] ? PEOPLE[w].color : "transparent", color: c[w] ? "#FFF" : PEOPLE[w].color, fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>
+                  ${PEOPLE[w].name[0]}
+                </button>`)}
+              <button class="del" onClick=${() => update((d) => { d.criteria = d.criteria.filter((x) => x.id !== c.id); return d; })}>✕</button>
+            </span>
+          </div>`)}
+      </div>`;
+  };
+
+  return html`
+    <div>
+      <div class="card">
+        <h2>The list</h2>
+        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 4px" }}>Both circles filled = it's official.</p>
+        ${section("must", "Must-haves")}
+        ${section("nice", "Nice-to-haves")}
+        <div class="row" style=${{ marginTop: "10px" }}>
+          <span style=${{ flex: 2 }}><input value=${text} onInput=${(e) => setText(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addCriterion()} placeholder="Room for a dog yard…" /></span>
+          <select value=${type} onChange=${(e) => setType(e.target.value)} style=${{ width: "auto" }}>
+            <option value="must">Must</option>
+            <option value="nice">Nice</option>
+          </select>
+          <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addCriterion}>Add</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Save a listing</h2>
+        <label>Zillow / Realtor / Redfin link — address autofills</label>
+        <input value=${form.link} onInput=${onLink} placeholder="https://www.zillow.com/homedetails/…" />
+        <div class="row">
+          <span style=${{ flex: 2 }}><label>Address or nickname</label><input value=${form.address} onInput=${(e) => setForm({ ...form, address: e.target.value })} placeholder="autofills from the link" /></span>
+          <span><label>Asking</label><input value=${form.price} onInput=${(e) => setForm({ ...form, price: e.target.value })} placeholder="$375k" /></span>
+        </div>
+        <label>Notes</label>
+        <textarea rows="2" value=${form.notes} onInput=${(e) => setForm({ ...form, notes: e.target.value })} placeholder="1.5 bath ✓, hear the highway? check"></textarea>
+        <button class="btn" style=${{ marginTop: "12px" }} onClick=${addHouse}>Save house</button>
+      </div>
+
+      ${(data.houses || []).map((hh) => {
+        const both = hh.shaneRating >= 4 && hh.mollyRating >= 4;
+        return html`
+          <div key=${hh.id} class="card" style=${both ? { borderColor: "#1D5C63", borderWidth: "2px" } : {}}>
+            <div style=${{ display: "flex", justifyContent: "space-between", gap: "8px" }}>
+              <div>
+                <p style=${{ fontFamily: "Fraunces, serif", fontSize: "17px", fontWeight: 650, margin: "0 0 2px", color: "#22333B" }}>${hh.address || "Untitled house"} ${both ? "🤝" : ""}</p>
+                <p style=${{ fontSize: "13px", color: "#6E6754", margin: 0 }}>
+                  ${hh.price && html`<strong>${hh.price} · </strong>`}
+                  added by ${PEOPLE[hh.addedBy].name}
+                  ${hh.link && html` · <a href=${hh.link} target="_blank" rel="noreferrer" style=${{ color: "#1D5C63" }}>listing ↗</a>`}
+                </p>
+              </div>
+              <select value=${hh.status}
+                onChange=${(e) => { const v = e.target.value; update((d) => { d.houses.find((x) => x.id === hh.id).status = v; return d; }, `moved ${hh.address || "a house"} to "${v}"`); }}
+                style=${{ width: "auto", fontSize: "12px", padding: "6px 8px", alignSelf: "flex-start" }}>
+                ${statuses.map((s) => html`<option key=${s}>${s}</option>`)}
+              </select>
+            </div>
+            ${hh.notes && html`<p style=${{ fontSize: "14px", color: "#44403A", margin: "8px 0 0" }}>${hh.notes}</p>`}
+            <div style=${{ display: "flex", gap: "20px", marginTop: "10px", flexWrap: "wrap", fontFamily: "Public Sans, sans-serif" }}>
+              ${["shane", "molly"].map((w) => html`
+                <span key=${w} style=${{ fontSize: "13px", color: "#6E6754" }}>
+                  ${PEOPLE[w].name}:${" "}
+                  <${Stars} value=${hh[w + "Rating"]} color=${PEOPLE[w].color} readOnly=${me !== w}
+                    onChange=${(v) => update((d) => { d.houses.find((x) => x.id === hh.id)[w + "Rating"] = v; return d; }, `rated ${hh.address || "a house"} ${v}★`)} />
+                </span>`)}
+              <button class="del" style=${{ marginLeft: "auto" }} onClick=${() => { if (confirm("Remove this house?")) update((d) => { d.houses = d.houses.filter((x) => x.id !== hh.id); return d; }); }}>remove</button>
+            </div>
+            <${Comments} items=${hh.comments || []} me=${me}
+              onAdd=${(t) => update((d) => { const x = d.houses.find((y) => y.id === hh.id); x.comments = [...(x.comments || []), { id: uid(), who: me, text: t, ts: Date.now() }]; return d; }, `commented on ${hh.address || "a house"}`)} />
+          </div>`;
+      })}
+
+      <div class="card">
+        <h2>Vision board</h2>
+        <div class="row">
+          <input value=${pinText} onInput=${(e) => setPinText(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addPin()} placeholder="Pin a vibe, or paste a link…" />
+          <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addPin}>Pin</button>
+        </div>
+        <div style=${{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "10px" }}>
+          ${(data.board || []).map((b) => html`
+            <div key=${b.id} style=${{ border: "1.5px solid #F0EBDD", borderRadius: "10px", padding: "8px 10px" }}>
+              <${Who} who=${b.who} initialOnly />
+              ${b.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#22333B" }}>${b.text}</p>`}
+              ${b.url && html`<a href=${b.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#1D5C63", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
+              <button class="del" onClick=${() => update((d) => { d.board = d.board.filter((x) => x.id !== b.id); return d; })}>✕</button>
+            </div>`)}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ---------- LISTS ----------
+function StoreLists({ data, update, me }) {
+  const [name, setName] = useState("");
+  const [drafts, setDrafts] = useState({});
+
+  const addList = () => {
+    if (!name.trim()) return;
+    const nm = name.trim();
+    update((d) => { d.lists.push({ id: uid(), name: nm, items: [] }); return d; }, `made a list: ${nm}`);
+    setName("");
+  };
+  const addItem = (listId, listName) => {
+    const t = (drafts[listId] || "").trim();
+    if (!t) return;
+    update((d) => { d.lists.find((l) => l.id === listId).items.push({ id: uid(), text: t, done: false, who: me }); return d; }, `added "${t}" to ${listName}`);
+    setDrafts({ ...drafts, [listId]: "" });
+  };
+
+  return html`
+    <div>
+      <div class="card">
+        <h2>New list</h2>
+        <div class="row">
+          <span style=${{ flex: 2 }}><input value=${name} onInput=${(e) => setName(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addList()} placeholder="Stop & Shop, Home Depot, packing list…" /></span>
+          <button class="btn" onClick=${addList} style=${{ flex: "0 0 auto" }}>Create</button>
+        </div>
+      </div>
+      ${(data.lists || []).map((l) => {
+        const doneCount = l.items.filter((i) => i.done).length;
+        return html`
+          <div key=${l.id} class="card">
+            <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <h2 style=${{ margin: 0 }}>${l.name}</h2>
+              <span style=${{ fontSize: "12px", color: "#8A8371", fontFamily: "Public Sans, sans-serif" }}>
+                ${l.items.length > 0 && `${doneCount}/${l.items.length}`}
+                <button class="del" onClick=${() => { if (confirm(`Delete list "${l.name}"?`)) update((d) => { d.lists = d.lists.filter((x) => x.id !== l.id); return d; }); }}>delete</button>
+              </span>
+            </div>
+            ${l.items.map((it) => html`
+              <div key=${it.id} style=${{ display: "flex", alignItems: "center", gap: "10px", padding: "7px 0", borderBottom: "1px solid #F0EBDD" }}>
+                <button aria-label=${it.done ? "Mark not done" : "Mark done"}
+                  onClick=${() => update((d) => { const x = d.lists.find((y) => y.id === l.id).items.find((y) => y.id === it.id); x.done = !x.done; return d; })}
+                  style=${{ width: "22px", height: "22px", borderRadius: "6px", cursor: "pointer", flexShrink: 0, border: "2px solid #1D5C63", background: it.done ? "#1D5C63" : "transparent", color: "#FFF", fontSize: "13px", lineHeight: 1 }}>
+                  ${it.done ? "✓" : ""}
+                </button>
+                <span style=${{ fontSize: "15px", color: it.done ? "#8A8371" : "#22333B", textDecoration: it.done ? "line-through" : "none", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${it.text}</span>
+                <${Who} who=${it.who} initialOnly />
+              </div>`)}
+            <div class="row" style=${{ marginTop: "10px" }}>
+              <input value=${drafts[l.id] || ""} onInput=${(e) => setDrafts({ ...drafts, [l.id]: e.target.value })} onKeyDown=${(e) => e.key === "Enter" && addItem(l.id, l.name)} placeholder="Add an item…" />
+              <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${() => addItem(l.id, l.name)}>Add</button>
+            </div>
+            ${doneCount > 0 && html`
+              <button class="ghost" style=${{ marginTop: "10px" }}
+                onClick=${() => update((d) => { const x = d.lists.find((y) => y.id === l.id); x.items = x.items.filter((i) => !i.done); return d; })}>
+                Clear ${doneCount} checked
+              </button>`}
+          </div>`;
+      })}
+    </div>`;
+}
+
+// ---------- PLANS ----------
+function Plans({ data, update, me }) {
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+  const [tripForm, setTripForm] = useState({ name: "", when: "" });
+  const [pinDrafts, setPinDrafts] = useState({});
+  const statuses = ["dreaming", "planning", "booked", "been there"];
+  const statusColor = { dreaming: "#8A8371", planning: "#1D5C63", booked: "#B4552D", "been there": "#22333B" };
+
+  const addDate = () => {
+    if (!title.trim() || !date) return;
+    const t = title.trim();
+    update((d) => {
+      d.dates.push({ id: uid(), title: t, date, who: me });
+      d.dates.sort((a, b) => a.date.localeCompare(b.date));
+      return d;
+    }, `added a plan: ${t} (${fmtDate(date)})`);
+    setTitle(""); setDate("");
+  };
+  const addTrip = () => {
+    if (!tripForm.name.trim()) return;
+    const nm = tripForm.name.trim();
+    update((d) => { d.trips.unshift({ id: uid(), name: nm, when: tripForm.when.trim(), status: "dreaming", pins: [], comments: [], addedBy: me }); return d; }, `dreamed up a trip: ${nm}`);
+    setTripForm({ name: "", when: "" });
+  };
+  const addPin = (tripId, tripName) => {
+    const raw = (pinDrafts[tripId] || "").trim();
+    if (!raw) return;
+    const isUrl = /^https?:\/\//i.test(raw);
+    update((d) => { d.trips.find((t) => t.id === tripId).pins.push({ id: uid(), text: isUrl ? "" : raw, url: isUrl ? raw : "", who: me }); return d; }, `pinned an idea to ${tripName}`);
+    setPinDrafts({ ...pinDrafts, [tripId]: "" });
+  };
+
+  return html`
+    <div>
+      <div class="card">
+        <h2>Shared dates</h2>
+        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Anything within 30 days also shows on Today.</p>
+        ${(data.dates || []).length === 0 && html`<p class="empty">Nothing scheduled. Yet.</p>`}
+        ${(data.dates || []).map((d) => {
+          const days = relDays(d.date);
+          return html`
+            <div key=${d.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", opacity: days < 0 ? 0.5 : 1, gap: "8px" }}>
+              <span style=${{ fontSize: "14px", color: "#22333B", fontFamily: "Public Sans, sans-serif" }}>
+                <${Who} who=${d.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${d.title}</span>
+              </span>
+              <span style=${{ whiteSpace: "nowrap" }}>
+                <span class=${days >= 0 && days <= 3 ? "chip soon" : "chip"}>${rel(days)} · ${fmtDate(d.date)}</span>
+                <button class="del" onClick=${() => update((x) => { x.dates = x.dates.filter((y) => y.id !== d.id); return x; })}>✕</button>
+              </span>
+            </div>`;
+        })}
+        <div class="row" style=${{ marginTop: "10px" }}>
+          <span style=${{ flex: 2 }}><label>What</label><input value=${title} onInput=${(e) => setTitle(e.target.value)} placeholder="Devils game, her cousin's wedding…" /></span>
+          <span><label>When</label><input type="date" value=${date} onInput=${(e) => setDate(e.target.value)} /></span>
+        </div>
+        <button class="btn" style=${{ marginTop: "12px" }} onClick=${addDate}>Add</button>
+      </div>
+
+      <div class="card">
+        <h2>Dream up a trip</h2>
+        <div class="row">
+          <span style=${{ flex: 2 }}><label>Where</label><input value=${tripForm.name} onInput=${(e) => setTripForm({ ...tripForm, name: e.target.value })} placeholder="P-town, Iceland, a cabin somewhere…" /></span>
+          <span><label>Roughly when</label><input value=${tripForm.when} onInput=${(e) => setTripForm({ ...tripForm, when: e.target.value })} placeholder="Fall 2026" /></span>
+        </div>
+        <button class="btn" style=${{ marginTop: "12px" }} onClick=${addTrip}>Add trip</button>
+      </div>
+
+      ${(data.trips || []).map((t) => html`
+        <div key=${t.id} class="card">
+          <div style=${{ display: "flex", justifyContent: "space-between", gap: "8px", alignItems: "flex-start" }}>
+            <div>
+              <p style=${{ fontFamily: "Fraunces, serif", fontSize: "17px", fontWeight: 650, margin: "0 0 2px", color: "#22333B" }}>${t.name}</p>
+              <p style=${{ fontSize: "13px", color: "#6E6754", margin: 0 }}>${t.when && `${t.when} · `}dreamed up by ${PEOPLE[t.addedBy].name}</p>
+            </div>
+            <select value=${t.status}
+              onChange=${(e) => { const v = e.target.value; update((d) => { d.trips.find((x) => x.id === t.id).status = v; return d; }, `moved ${t.name} to "${v}"`); }}
+              style=${{ width: "auto", fontSize: "12px", padding: "6px 8px", color: statusColor[t.status], fontWeight: 600 }}>
+              ${statuses.map((s) => html`<option key=${s}>${s}</option>`)}
+            </select>
+          </div>
+          ${t.pins.length > 0 && html`
+            <div style=${{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "10px" }}>
+              ${t.pins.map((p) => html`
+                <div key=${p.id} style=${{ border: "1.5px solid #F0EBDD", borderRadius: "10px", padding: "8px 10px" }}>
+                  <${Who} who=${p.who} initialOnly />
+                  ${p.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#22333B" }}>${p.text}</p>`}
+                  ${p.url && html`<a href=${p.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#1D5C63", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
+                  <button class="del" onClick=${() => update((d) => { const x = d.trips.find((y) => y.id === t.id); x.pins = x.pins.filter((y) => y.id !== p.id); return d; })}>✕</button>
+                </div>`)}
+            </div>`}
+          <div class="row" style=${{ marginTop: "10px" }}>
+            <input value=${pinDrafts[t.id] || ""} onInput=${(e) => setPinDrafts({ ...pinDrafts, [t.id]: e.target.value })} onKeyDown=${(e) => e.key === "Enter" && addPin(t.id, t.name)} placeholder="Pin an idea, or paste a link…" />
+            <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${() => addPin(t.id, t.name)}>Pin</button>
+          </div>
+          <${Comments} items=${t.comments || []} me=${me}
+            onAdd=${(txt) => update((d) => { const x = d.trips.find((y) => y.id === t.id); x.comments = [...(x.comments || []), { id: uid(), who: me, text: txt, ts: Date.now() }]; return d; }, `commented on ${t.name}`)} />
+          <button class="del" style=${{ marginTop: "8px" }} onClick=${() => { if (confirm(`Delete trip "${t.name}"?`)) update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); return d; }); }}>delete trip</button>
+        </div>`)}
+    </div>`;
+}
+
+render(html`<${App} />`, document.getElementById("app"));
+</script>
+</body>
+</html>
