@@ -60,7 +60,7 @@ const firebaseConfig = {
 // Map each Gmail address to a person. Lowercase.
 const EMAILS = {
   "shanemsap@gmail.com": "shane",
-  "mollymaclaughlin@gmail.com": "molly",
+  "molly.maclaughlin@gmail.com": "molly", "mollymaclaughlin@gmail.com": "molly",
 };
 /* ============================================================ */
 
@@ -324,7 +324,7 @@ function App() {
       <p style=${{ color: "#5B5647", fontSize: "14px" }}>Almost there — open <code>index.html</code>, paste your Firebase config and your two Gmail addresses into the SETUP block at the top, then reload. Full steps in the README.</p>
     </div>`;
 
-  if (phase === "loading" || (phase === "app" && !data)) return html`
+  if (phase === "loading") return html`
     <p style=${{ padding: "24px", fontFamily: "Public Sans, sans-serif" }}>Loading your hub…</p>`;
 
   if (phase === "signin") return html`
@@ -342,7 +342,7 @@ function App() {
       <button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out</button>
     </div>`;
 
-  const unread = (data.activity || []).filter((a) => a.ts > lastSeen && a.who !== me).length;
+  if (!data) return html`<div style=${{ padding: "48px 24px", textAlign: "center" }}><p class="eyebrow">signed in as ${user.email}</p><h1 class="display">Opening your hub…</h1><p style=${{ color: "#5B5647", fontSize: "14px" }}>Stuck here? This Google account may not have access to the hub.</p><button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out & try another account</button></div>`; const unread = (data.activity || []).filter((a) => a.ts > lastSeen && a.who !== me).length;
 
   return html`
     <div>
