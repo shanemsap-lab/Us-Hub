@@ -39,9 +39,9 @@ This matters: your GitHub repo is public, so the Firebase config in it is public
 
 ## 4. Put it on GitHub Pages
 
-1. Create a new repo (e.g. `us-hub`) and push `index.html` (and this README) to it.
+1. Create a new repo (e.g. `Us-Hub`) and push `index.html` (and this README) to it.
 2. Repo → **Settings → Pages** → Source: "Deploy from a branch" → branch `main`, folder `/ (root)` → Save.
-3. Your app lives at `https://shanemsap-lab.github.io/us-hub/` within a minute or two.
+3. Your app lives at `https://shanemsap-lab.github.io/Us-Hub/` within a minute or two.
 
 ## 5. Authorize the domain + install on your phones
 
