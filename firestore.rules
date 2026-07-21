@@ -1,12 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /hub/{docId} {
-      allow read, write: if request.auth != null
+    function isUs() {
+      return request.auth != null
         && request.auth.token.email in [
           'shanemsap@gmail.com',
-          'mollymaclaughlin@gmail.com'
+          'mollymaclaughlin@gmail.com',
+          'molly.maclaughlin@gmail.com'
         ];
+    }
+    match /hub/{docId} {
+      allow read, write: if isUs();
+    }
+    // v2: taps are append-only from the app; the Cloud Function
+    // (admin SDK, bypasses rules) reads and prunes them.
+    match /taps/{tapId} {
+      allow read, create: if isUs();
+      allow update, delete: if false;
     }
   }
 }

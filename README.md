@@ -49,11 +49,39 @@ This matters: your GitHub repo is public, so the Firebase config in it is public
 2. On each iPhone: open the URL in Safari → Share → **Add to Home Screen**. It behaves like an app from there.
 3. Sign in with Google on each phone. Done — everything syncs live between you.
 
-## How notifications work
+## How notifications work (v2 — real push!)
 
-- The 🔔 bell shows a badge counting everything the other person has done since you last checked.
-- Tap **enable alerts** in the feed to allow banner notifications while the app is open — since sync is live, you'll see her changes land in real time.
-- True push notifications (phone buzzing while the app is closed) need a push server and Apple's web-push flow; that's a possible v2, not included here.
+- **Taps**: the 💓 button on the Today tab sends a tap. The other person's phone gets a real push notification — locked screen, closed app, doesn't matter — and if they have the app open, a full-screen pulse in your color.
+- The 🔔 bell still shows a badge counting everything the other person has done since you last checked, and foreground banners still work as before.
+
+### One-time push setup (~20 min)
+
+1. **Upgrade to Blaze**: Firebase console → gear → Usage and billing → Modify plan → Blaze. Requires a card, but two people tapping will stay at $0 — the free tier includes 2M function calls/month.
+2. **Get the VAPID key**: Project settings → **Cloud Messaging** → Web configuration → **Web Push certificates** → Generate key pair. Copy the key.
+3. **Paste it** into `VAPID_KEY` in the SETUP block at the top of `index.html`. Commit and push.
+4. **Update Firestore rules**: console → Firestore → Rules → paste the contents of `firestore.rules` from this repo → Publish. (v2 adds a `taps` collection.)
+5. **Deploy the function** from a machine with Node 20+:
+   ```
+   npm install -g firebase-tools
+   firebase login
+   cd Us-Hub && firebase use us-hub-smmb
+   cd functions && npm install && cd ..
+   firebase deploy --only functions
+   ```
+6. **On each iPhone**: open the installed home-screen app → Today tab → tap **"Turn on buzzes"** → Allow. (If you'd enabled alerts before, delete and re-add the app to the Home Screen first so iOS picks up the new service worker cleanly.)
+7. Send a tap. The other phone should buzz within a couple seconds.
+
+### How the pieces fit
+
+```
+tap button ──▶ Firestore taps/{id} ──▶ Cloud Function sendTap
+                     │                        │
+                     ▼                        ▼
+        other phone's app open?      FCM push ──▶ firebase-messaging-sw.js
+        pulse via live snapshot            ──▶ lock-screen notification
+```
+
+Push tokens live in `hub/push` (one array per person, auto-pruned when a device disappears). Tap docs older than 24h are cleaned up automatically.
 
 ## Troubleshooting
 
