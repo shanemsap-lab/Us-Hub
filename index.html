@@ -27,8 +27,10 @@
   input, select, textarea { font-family: 'Public Sans', sans-serif; font-size: 15px; border: 1.5px solid #453A4A; border-radius: 10px; padding: 10px 12px; background: #2A2230; color: #F2EAE0; width: 100%; }
   input:focus, select:focus, textarea:focus { outline: 2px solid #6FB3BA; border-color: #6FB3BA; }
   label { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #BFB3BB; display: block; margin: 10px 0 4px; }
-  .row { display: flex; gap: 10px; }
-  .row > * { flex: 1; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row > * { flex: 1 1 130px; min-width: 0; }
+  .row input, .row select { width: 100%; min-width: 0; box-sizing: border-box; }
+  input[type="date"] { min-width: 0; -webkit-appearance: none; appearance: none; }
   .who { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #FFF; font-family: 'Public Sans', sans-serif; }
   .empty { color: #BFB3BB; font-family: 'Public Sans', sans-serif; font-size: 14px; padding: 8px 0; }
   h2 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 650; color: #6FB3BA; margin: 4px 0 10px; letter-spacing: -0.01em; }
