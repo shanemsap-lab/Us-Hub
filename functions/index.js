@@ -1,60 +1,64 @@
-/* Us. — v2 Cloud Function
-   Fires when a tap doc is created, pushes to the *other* person's
-   devices, prunes dead tokens, and cleans up taps older than a day. */
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+/* Cloud Function — the missing server-side half of push notifications.
+   A browser can only show a notification while its own tab/app is open (that's
+   what index.html's foreground Notification() calls do). To land a push on the
+   HOME SCREEN when the app is closed, something with server credentials has to
+   call Firebase Cloud Messaging — that can't happen from index.html itself, so
+   this function does it, running on Firebase's servers, triggered whenever a
+   partner adds something.
+
+   Deploy once with the Firebase CLI:
+     npm install -g firebase-tools   (if you don't have it)
+     firebase login
+     firebase init functions        (pick this project, JavaScript, this folder)
+     firebase deploy --only functions
+
+   Needs the paid-but-effectively-free "Blaze" plan (Cloud Functions require it;
+   a couple of people tapping a heart all day costs fractions of a cent). */
 const { initializeApp } = require("firebase-admin/app");
-const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+const { getFirestore } = require("firebase-admin/firestore");
 const { getMessaging } = require("firebase-admin/messaging");
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 
 initializeApp();
+const db = getFirestore();
 
-const NAMES = { shane: "Shane", molly: "Molly" };
-const APP_URL = "https://shanemsap-lab.github.io/Us-Hub/";
+const PEOPLE = { shane: "Shane", molly: "Molly" };
 
-exports.sendTap = onDocumentCreated("taps/{tapId}", async (event) => {
-  const tap = event.data && event.data.data();
-  if (!tap || !NAMES[tap.who]) return;
-
-  const to = tap.who === "shane" ? "molly" : "shane";
-  const db = getFirestore();
+async function notifyPartner(who, title, body, tag) {
   const pushDoc = await db.doc("hub/push").get();
-  const tokens = (pushDoc.exists && pushDoc.data()[to]) || [];
-  if (tokens.length === 0) {
-    console.log(`No push tokens for ${to} yet — tap stored, nothing sent.`);
-    return;
-  }
-
-  const result = await getMessaging().sendEachForMulticast({
-    tokens,
-    notification: {
-      title: "Us. 💓",
-      body: `${NAMES[tap.who]} is thinking of you`,
-    },
-    webpush: {
-      headers: { Urgency: "high", TTL: "3600" },
-      fcmOptions: { link: APP_URL },
-    },
-  });
-
-  // Drop tokens for devices that no longer exist (reinstalls, resets)
-  const dead = [];
-  result.responses.forEach((r, i) => {
-    const code = r.error && r.error.code;
-    if (code === "messaging/registration-token-not-registered" ||
-        code === "messaging/invalid-registration-token" ||
-        code === "messaging/invalid-argument") {
-      dead.push(tokens[i]);
+  const tokenMap = pushDoc.exists ? pushDoc.data() : {};
+  const partner = who === "shane" ? "molly" : "shane";
+  const tokens = tokenMap[partner] || [];
+  if (!tokens.length) return;
+  const stale = [];
+  await Promise.all(tokens.map(async (token) => {
+    try {
+      await getMessaging().send({
+        token,
+        notification: { title, body },
+        webpush: { fcmOptions: { link: "/" }, notification: { icon: "/icon-192.png", tag, vibrate: [80, 50, 80, 50, 140] } },
+      });
+    } catch (e) {
+      if (e.code === "messaging/registration-token-not-registered") stale.push(token);
     }
-  });
-  if (dead.length) {
-    await db.doc("hub/push").update({ [to]: FieldValue.arrayRemove(...dead) });
+  }));
+  if (stale.length) {
+    const { FieldValue } = require("firebase-admin/firestore");
+    await db.doc("hub/push").set({ [partner]: FieldValue.arrayRemove(...stale) }, { merge: true });
   }
+}
 
-  // Keep the taps collection tiny
-  const old = await db.collection("taps")
-    .where("ts", "<", Date.now() - 24 * 60 * 60 * 1000)
-    .limit(50).get();
-  await Promise.all(old.docs.map((d) => d.ref.delete()));
+exports.onTap = onDocumentCreated("taps/{id}", async (event) => {
+  const t = event.data.data();
+  await notifyPartner(t.who, "Us. 💌", t.caption ? `${PEOPLE[t.who]}: "${t.caption}"` : `${PEOPLE[t.who]} sent you a tap 💓`, "tap");
+});
 
-  console.log(`Tap from ${tap.who} → ${to}: ${result.successCount} sent, ${result.failureCount} failed.`);
+exports.onActivity = onDocumentCreated("activity/{id}", async (event) => {
+  const a = event.data.data();
+  await notifyPartner(a.who, "Us. 💛", `${PEOPLE[a.who]} ${a.text}`, "activity");
+});
+
+exports.onComment = onDocumentCreated("comments/{id}", async (event) => {
+  const c = event.data.data();
+  await notifyPartner(c.who, "Us. 💬", `${PEOPLE[c.who]}: "${c.text.slice(0, 80)}"`, "comment");
 });
