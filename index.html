@@ -401,6 +401,14 @@ function App() {
     setConfirmState({ message, onConfirm });
   }, []);
 
+  // The missing link: every tab calls showUndo(label, restore) and the toast
+  // below renders it — this function is what connects them.
+  const showUndo = useCallback((label, restore) => {
+    clearTimeout(undoTimer.current);
+    setUndo({ label, restore, key: Date.now() });
+    undoTimer.current = setTimeout(() => setUndo(null), 6000);
+  }, []);
+
   useEffect(() => {
     if (phase !== "app" || !me) return;
     const q = fb.query(fb.collection(db, "taps"), fb.orderBy("ts", "desc"), fb.limit(1));
