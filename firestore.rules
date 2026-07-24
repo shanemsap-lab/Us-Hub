@@ -9,14 +9,10 @@ service cloud.firestore {
           'molly.maclaughlin@gmail.com'
         ];
     }
-    match /hub/{docId} {
-      allow read, write: if isUs();
-    }
-    // v2: taps are append-only from the app; the Cloud Function
-    // (admin SDK, bypasses rules) reads and prunes them.
-    match /taps/{tapId} {
-      allow read, create: if isUs();
-      allow update, delete: if false;
-    }
+    match /hub/{docId} { allow read, write: if isUs(); }
+    match /taps/{id} { allow read, create: if isUs(); allow update, delete: if false; }
+    match /activity/{id} { allow read, write: if isUs(); }
+    match /comments/{id} { allow read, write: if isUs(); }
+    match /inbox/{id} { allow read, write: if isUs(); }
   }
 }
