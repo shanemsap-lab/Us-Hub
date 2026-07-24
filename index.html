@@ -322,6 +322,7 @@ function App() {
   const [commentsAll, setCommentsAll] = useState([]);
   const pulseTimer = useRef(null);
   const undoTimer = useRef(null);
+  const legacyMigrated = useRef(false);
   const errTimer = useRef(null);
   const tapsReady = useRef(false);
   const prevActIds = useRef(new Set());
@@ -350,6 +351,17 @@ function App() {
         return;
       }
       const d = { ...structuredClone(SEED), ...snap.data() };
+      // One-time rescue: pre-reskin brain dumps lived in an `inbox` array inside
+      // this doc. Sweep any that are still there into Memories, then clear the field.
+      if (Array.isArray(snap.data().inbox) && snap.data().inbox.length > 0 && !legacyMigrated.current) {
+        legacyMigrated.current = true;
+        const have = new Set((d.archive || []).map((a) => a.id));
+        const rescued = snap.data().inbox
+          .filter((it) => it && it.text && !have.has(it.id))
+          .map((it) => ({ id: it.id || uid(), type: "dump", title: it.text, date: it.date || todayStr(), who: it.who || "shane" }));
+        await fb.updateDoc(ref, { archive: [...rescued, ...(d.archive || [])], inbox: fb.deleteField() });
+        return; // next snapshot delivers the merged result
+      }
       setData(d);
     });
     return unsub;
@@ -720,6 +732,7 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif, showUndo
             </span>
             <span style=${{ fontSize: "12px", color: "#6E6754", whiteSpace: "nowrap" }}>
               ${rel(relDays(it.date))}
+              <button class="del" title="Move to memories" aria-label="Move to memories" style=${{ color: "#1D5C63" }} onClick=${() => { update((d) => { d.archive = d.archive || []; d.archive.unshift({ id: it.id, type: "dump", title: it.text, date: it.date || todayStr(), who: it.who }); return d; }, `tucked a thought into memories 🫙`); deleteInboxItem(it); }}>🫙</button>
               <button class="del" aria-label="Delete" onClick=${() => deleteInboxItem(it)}>✕</button>
             </span>
           </div>`)}
@@ -824,7 +837,7 @@ function Us({ data, update, me, showUndo }) {
           <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addMemory}>Jar it</button>
         </div>
         ${(() => {
-          const ICONS = { jar: "🫙", date: "💌", trip: "✈️", visit: "🏡" };
+          const ICONS = { jar: "🫙", date: "💌", trip: "✈️", visit: "🏡", dump: "💭" };
           const stream = [
             ...(data.memories || []).map((m) => ({ ...m, kind: "jar", title: m.text })),
             ...(data.archive || []).map((a) => ({ ...a, kind: a.type })),
