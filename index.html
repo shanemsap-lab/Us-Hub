@@ -72,6 +72,17 @@
   .statstrip > div + div { border-left: 1px solid #322939; }
   .statnum { font-family: 'Fraunces', serif; font-weight: 650; font-size: 30px; line-height: 1.05; color: #F2EAE0; margin: 0; }
   .statlbl { font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #B3A6AE; margin: 5px 0 0; }
+  .storydash { display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; padding: 4px 0 12px; }
+  .storydash > div + div { border-left: 1px solid #322939; }
+  .strip { display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 12px; scroll-snap-type: x proximity; scrollbar-width: none; }
+  .strip::-webkit-scrollbar { display: none; }
+  .mcard { scroll-snap-align: start; flex: 0 0 148px; background: #2A2230; border: 1px solid #3A2F42; border-radius: 10px; padding: 12px 12px 10px; position: relative; }
+  .mcard::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: var(--pc, #6FB3BA); box-shadow: 0 0 10px var(--pc, #6FB3BA); }
+  .mcard.future { border-style: dashed; opacity: 0.75; }
+  .mday { font-family: 'Fraunces', serif; font-weight: 650; font-size: 30px; line-height: 1; margin: 0; }
+  .mdaylbl { font-family: 'Public Sans', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.14em; color: #D9B44A; margin: 0 0 2px; }
+  .mtitle { font-family: 'Public Sans', sans-serif; font-size: 13px; font-weight: 600; color: #F2EAE0; margin: 8px 0 0; overflow-wrap: anywhere; }
+  .mmeta { font-family: 'Public Sans', sans-serif; font-size: 11px; color: #B3A6AE; margin: 4px 0 0; }
 </style>
 </head>
 <body>
@@ -251,7 +262,7 @@ async function initFirebase() {
 
 // ---------- atoms ----------
 const Who = ({ who, initialOnly }) => html`
-  <span class="who" style=${{ background: who === "both" ? "#22333B" : PEOPLE[who].color }}>
+  <span class="who" style=${{ background: who === "both" ? "#4A3F4E" : PEOPLE[who].color }}>
     ${who === "both" ? "Both" : initialOnly ? PEOPLE[who].name[0] : PEOPLE[who].name}
   </span>`;
 
@@ -270,13 +281,13 @@ const GoalFill = ({ pct, size = 96 }) => {
   return html`
     <svg viewBox="0 0 140 120" width=${size} height=${size * 120 / 140} aria-label="${Math.round(clamped * 100)}% of goal">
       <defs><clipPath id=${clip}><path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" /></clipPath></defs>
-      <path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" fill="#FFFFFF" stroke="#22333B" stroke-width="3" stroke-linejoin="round" />
+      <path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" fill="#2A2230" stroke="#B3A6AE" stroke-width="3" stroke-linejoin="round" />
       <g clip-path="url(#${clip})">
         <rect x="0" y=${112 - hgt} width="140" height=${hgt + 4} fill="#1D5C63" opacity="0.9" />
         <path d="M0 ${112 - hgt} q 17 -7 35 0 t 35 0 t 35 0 t 35 0 V 116 H 0 Z" fill="#1D5C63" />
       </g>
-      <path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" fill="none" stroke="#22333B" stroke-width="3" stroke-linejoin="round" />
-      <rect x="60" y="80" width="20" height="32" fill="none" stroke="#22333B" stroke-width="2.5" />
+      <path d="M70 8 L128 52 L118 52 L118 112 L22 112 L22 52 L12 52 Z" fill="none" stroke="#B3A6AE" stroke-width="3" stroke-linejoin="round" />
+      <rect x="60" y="80" width="20" height="32" fill="none" stroke="#B3A6AE" stroke-width="2.5" />
     </svg>`;
 };
 
@@ -803,47 +814,36 @@ function Us({ data, update, me, showUndo }) {
       <div class="card">
         <h2>The story of us</h2>
         ${(() => {
-          const all = (data.milestones || []).slice();
-          const past = all.filter((m) => relDays(m.date) <= 0).sort((a, b) => a.date.localeCompare(b.date));
-          const future = all.filter((m) => relDays(m.date) > 0).sort((a, b) => a.date.localeCompare(b.date));
-          const entry = (m) => {
+          const all = (data.milestones || []).slice().sort((a, b) => a.date.localeCompare(b.date));
+          const past = all.filter((m) => relDays(m.date) <= 0);
+          const future = all.filter((m) => relDays(m.date) > 0);
+          const chapters = new Set(past.map((m) => m.date.slice(0, 4))).size;
+          const card = (m) => {
             const d = dayOfUs(m.date, data.anniversary);
             return html`
-              <div key=${m.id} style=${{ position: "relative", padding: "2px 0 18px", display: "flex", gap: "14px", alignItems: "baseline" }}>
-                <span class="tldot" style=${{ background: PEOPLE[m.who].color, boxShadow: `0 0 10px ${PEOPLE[m.who].light}66` }}></span>
-                <span style=${{ flex: "0 0 58px", textAlign: "right" }}>
-                  <span style=${{ display: "block", fontFamily: "Public Sans, sans-serif", fontSize: "9px", fontWeight: 700, letterSpacing: "0.14em", color: "#D9B44A" }}>${d < 0 ? "BEFORE" : "DAY"}</span>
-                  <span style=${{ display: "block", fontFamily: "Fraunces, serif", fontSize: "26px", fontWeight: 650, lineHeight: 1, color: PEOPLE[m.who].light }}>${d < 0 ? "—" : d}</span>
-                </span>
-                <span style=${{ flex: 1 }}>
-                  <p style=${{ fontSize: "15px", fontWeight: 600, color: "#F2EAE0", margin: 0, fontFamily: "Public Sans, sans-serif" }}>${m.title}</p>
-                  <p style=${{ fontSize: "12px", color: "#B3A6AE", margin: "3px 0 0" }}>
-                    ${fmtDate(m.date)} · ${relDays(m.date) > 0 ? rel(relDays(m.date)) : relLong(m.date)}
-                    <button class="del" aria-label="Delete" onClick=${() => { update((x) => { x.milestones = x.milestones.filter((y) => y.id !== m.id); return x; }); showUndo(`"${m.title}" removed`, () => update((x) => { x.milestones.push(m); x.milestones.sort((a, b) => a.date.localeCompare(b.date)); return x; })); }}>✕</button>
-                  </p>
-                </span>
+              <div key=${m.id} class=${relDays(m.date) > 0 ? "mcard future" : "mcard"} style=${{ "--pc": PEOPLE[m.who].light }}>
+                <p class="mdaylbl">${relDays(m.date) > 0 ? "AHEAD" : d < 0 ? "BEFORE" : "DAY"}</p>
+                <p class="mday" style=${{ color: PEOPLE[m.who].light }}>${d < 0 ? "—" : d}</p>
+                <p class="mtitle">${m.title}</p>
+                <p class="mmeta">${fmtDate(m.date)} · ${relDays(m.date) > 0 ? rel(relDays(m.date)) : relLong(m.date)}
+                  <button class="del" aria-label="Delete" onClick=${() => { update((x) => { x.milestones = x.milestones.filter((y) => y.id !== m.id); return x; }); showUndo(`"${m.title}" removed`, () => update((x) => { x.milestones.push(m); return x; })); }}>✕</button>
+                </p>
               </div>`;
           };
-          let lastYear = null;
-          const withYears = [];
-          past.forEach((m) => {
-            const y = m.date.slice(0, 4);
-            if (y !== lastYear) { withYears.push(html`<p key=${"y" + y} class="tlyear">${y}</p>`); lastYear = y; }
-            withYears.push(entry(m));
-          });
           return html`
-            <p style=${{ color: "#D9B44A", margin: "0 0 6px", fontFamily: "Caveat, cursive", fontSize: "20px" }}>once upon a time… 🕯️</p>
-            <div class="tlwrap">
-              <span class="tlspine"></span>
-              ${withYears}
+            <div class="storydash">
+              <div><p class="statnum" style=${{ fontSize: "26px" }}>${-relDays(data.anniversary)}</p><p class="statlbl">days written</p></div>
+              <div><p class="statnum" style=${{ fontSize: "26px", color: "#6FB3BA" }}>${past.length}</p><p class="statlbl">moments</p></div>
+              <div><p class="statnum" style=${{ fontSize: "26px", color: "#D97C52" }}>${future.length > 0 ? future.length : chapters}</p><p class="statlbl">${future.length > 0 ? "still to come" : chapters === 1 ? "chapter" : "chapters"}</p></div>
             </div>
-            ${future.length > 0 ? html`
-              <div class="tlwrap" style=${{ marginTop: "2px" }}>
-                <span class="tlspine future"></span>
-                <p class="tlyear" style=${{ marginTop: 0 }}>still to come ✨</p>
-                ${future.map(entry)}
-              </div>` : html`
-              <p style=${{ color: "#B3A6AE", margin: "2px 0 6px 20px", fontFamily: "Caveat, cursive", fontSize: "18px" }}>…to be continued</p>`}
+            <p style=${{ color: "#D9B44A", margin: "0 0 8px", fontFamily: "Caveat, cursive", fontSize: "20px" }}>once upon a time… 🕯️ <span style=${{ fontSize: "15px", color: "#B3A6AE" }}>(scroll →)</span></p>
+            <div class="strip">
+              ${past.map(card)}
+              ${future.map(card)}
+              <div class="mcard future" style=${{ "--pc": "#D9B44A", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <p style=${{ fontFamily: "Caveat, cursive", fontSize: "20px", color: "#D9B44A", margin: 0, textAlign: "center" }}>…to be<br/>continued</p>
+              </div>
+            </div>
         `;
         })()}
         <div class="row" style=${{ marginTop: "8px" }}>
@@ -1228,7 +1228,7 @@ function StoreLists({ data, update, me, showUndo, askConfirm }) {
                   style=${{ width: "22px", height: "22px", borderRadius: "6px", cursor: "pointer", flexShrink: 0, border: "2px solid #6FB3BA", background: it.done ? "#1D5C63" : "transparent", color: "#FFF", fontSize: "13px", lineHeight: 1 }}>
                   ${it.done ? "✓" : ""}
                 </button>
-                <span style=${{ fontSize: "15px", color: it.done ? "#6E6754" : "#22333B", textDecoration: it.done ? "line-through" : "none", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${it.text}</span>
+                <span style=${{ fontSize: "15px", color: it.done ? "#7A6F77" : "#F2EAE0", textDecoration: it.done ? "line-through" : "none", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${it.text}</span>
                 <${Who} who=${it.who} initialOnly />
               </div>`)}
             <div class="row" style=${{ marginTop: "10px" }}>
@@ -1252,7 +1252,7 @@ function Plans({ data, update, me, showUndo, askConfirm, comments, addComment })
   const [tripForm, setTripForm] = useState({ name: "", when: "" });
   const [pinDrafts, setPinDrafts] = useState({});
   const statuses = ["dreaming", "planning", "booked", "been there"];
-  const statusColor = { dreaming: "#6E6754", planning: "#1D5C63", booked: "#B4552D", "been there": "#22333B" };
+  const statusColor = { dreaming: "#B3A6AE", planning: "#6FB3BA", booked: "#E0715A", "been there": "#D9B44A" };
 
   const addDate = () => {
     if (!title.trim() || !date) return;
