@@ -56,6 +56,13 @@
   @keyframes ringgrow { from { transform: scale(1); opacity: 0.5; } to { transform: scale(34); opacity: 0; } }
   @keyframes heartbeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.35); } 60% { transform: scale(1.08); } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } .pulse { opacity: 0.9; } }
+  .tlwrap { position: relative; margin-left: 6px; padding-left: 20px; }
+  .tlspine { position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: linear-gradient(180deg, #B4552D, #1D5C63); }
+  .tlspine.future { background: none; border-left: 3px dashed #D8D2C4; }
+  .tldot { position: absolute; left: -25px; top: 10px; width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid #FBF8F1; box-shadow: 0 0 0 1.5px #E4DECF; }
+  .tlyear { font-family: 'Caveat', cursive; font-weight: 700; font-size: 22px; color: #8A8371; margin: 10px 0 2px; }
+  .tlday { display: inline-block; font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: #FBF8F1; background: #22333B; border-radius: 999px; padding: 2px 8px; margin-right: 6px; vertical-align: 1px; }
+  .memicon { display: inline-flex; width: 26px; height: 26px; border-radius: 8px; background: #F4EFE3; align-items: center; justify-content: center; font-size: 13px; flex: 0 0 auto; }
 </style>
 </head>
 <body>
@@ -81,7 +88,7 @@ const EMAILS = {
 // v2 — real push. Paste the key pair from Firebase console →
 // Project settings → Cloud Messaging → Web Push certificates.
 // Leave as-is and the app quietly skips push (taps still work in-app).
-const VAPID_KEY = "PASTE_VAPID_KEY";
+const VAPID_KEY = "BLKzZdDUgzari4Pyteeon70jO7oiJdjl8CC-9nLsvfp_tNoON4DTZ2B2rCp84rBq4SdUiRBZty6QGM33ieV83h4";
 /* Real push notifications (landing on the home screen while the app is closed)
    need a server-side sender — a browser can't push to another closed device on
    its own. That half lives in functions/index.js as a Cloud Function; deploy it
@@ -119,6 +126,7 @@ const SEED = {
   nextVisit: null,
   milestones: [{ id: "m1", date: "2026-03-28", title: "First date 💘", who: "shane" }],
   memories: [],
+  archive: [],
   goals: [{ id: "g1", name: "House fund", target: 15000, weekly: 101, deposits: [] }],
   bills: [],
   dates: [],
@@ -146,6 +154,19 @@ const relDays = (dateStr) => {
   return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - midnight()) / 86400000);
 };
 const rel = (n) => n === 0 ? "today" : n === 1 ? "tomorrow" : n === -1 ? "yesterday" : n > 0 ? `in ${n}d` : `${-n}d ago`;
+// Long-range relative time for memories: days → weeks → months → years ago.
+const relLong = (dateStr) => {
+  const n = -relDays(dateStr);
+  if (n < 0) return rel(-n);
+  if (n <= 13) return rel(-n);
+  if (n < 60) return `${Math.round(n / 7)} weeks ago`;
+  if (n < 365) return `${Math.round(n / 30.4)} months ago`;
+  const y = Math.floor(n / 365);
+  return y === 1 ? "a year ago" : `${y} years ago`;
+};
+// Which "day of us" a date falls on, counted from the anniversary (day zero).
+const dayOfUs = (dateStr, anniversary) =>
+  Math.round((new Date(dateStr + "T12:00:00") - new Date(anniversary + "T12:00:00")) / 86400000);
 const relTs = (ts) => {
   const mins = Math.round((Date.now() - ts) / 60000);
   if (mins < 1) return "just now";
@@ -653,7 +674,9 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif, showUndo
             ${fmtDate(visit.date)} · <strong>${rel(visitDays)}</strong>
             ${visit.note && html`<span style=${{ color: "#6E6754" }}> — ${visit.note}</span>`}
             ${visitPassed && html`<span style=${{ color: "#B4552D" }}> · that one's past — set the next one 💛</span>`}
-          </p>`}
+          </p>
+          ${visitPassed && html`
+            <button class="ghost" style=${{ marginTop: "10px" }} onClick=${() => { const v = visit; update((d) => { d.nextVisit = null; d.archive = d.archive || []; d.archive.unshift({ id: uid(), type: "visit", title: v.note ? `Together: ${v.note}` : "A visit", date: v.date, who: me }); return d; }, "tucked a visit into memories 🫙"); showUndo("Visit saved to memories", () => update((d) => { d.archive = (d.archive || []).slice(1); d.nextVisit = v; return d; })); }}>🫙 save it as a memory</button>`}`}
         ${!visit && !editingVisit && html`<p class="empty">Time blindness antidote #1: always know the next time you'll see each other.</p>`}
         ${editingVisit && html`
           <div>
@@ -740,40 +763,80 @@ function Us({ data, update, me, showUndo }) {
       </div>
 
       <div class="card">
-        <h2>Milestones</h2>
-        <div style=${{ borderLeft: "3px solid #E4DECF", paddingLeft: "14px", marginLeft: "4px" }}>
-          ${(data.milestones || []).map((m) => html`
-            <div key=${m.id} style=${{ position: "relative", padding: "6px 0 14px" }}>
-              <span style=${{ position: "absolute", left: "-21px", top: "12px", width: "11px", height: "11px", borderRadius: "50%", background: PEOPLE[m.who].color, border: "2px solid #FBF8F1" }}></span>
-              <p style=${{ fontSize: "15px", fontWeight: 600, color: "#22333B", margin: 0 }}>${m.title}</p>
-              <p style=${{ fontSize: "12px", color: "#6E6754", margin: "2px 0 0" }}>
-                ${new Date(m.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · ${rel(relDays(m.date))}
-                <button class="del" aria-label="Delete" onClick=${() => { update((d) => { d.milestones = d.milestones.filter((x) => x.id !== m.id); return d; }); showUndo(`"${m.title}" removed`, () => update((d) => { d.milestones.push(m); d.milestones.sort((a, b) => a.date.localeCompare(b.date)); return d; })); }}>✕</button>
-              </p>
-            </div>`)}
-        </div>
+        <h2>The story of us</h2>
+        ${(() => {
+          const all = (data.milestones || []).slice();
+          const future = all.filter((m) => relDays(m.date) > 0).sort((a, b) => a.date.localeCompare(b.date));
+          const past = all.filter((m) => relDays(m.date) <= 0).sort((a, b) => b.date.localeCompare(a.date));
+          const entry = (m) => {
+            const d = dayOfUs(m.date, data.anniversary);
+            return html`
+              <div key=${m.id} style=${{ position: "relative", padding: "4px 0 16px" }}>
+                <span class="tldot" style=${{ background: PEOPLE[m.who].color }}></span>
+                <p style=${{ fontSize: "15px", fontWeight: 600, color: "#22333B", margin: 0, fontFamily: "Public Sans, sans-serif" }}>${m.title}</p>
+                <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
+                  <span class="tlday">${d < 0 ? "BEFORE DAY ZERO" : d === 0 ? "DAY ZERO" : `DAY ${d}`}</span>
+                  ${fmtDate(m.date)} · ${relDays(m.date) > 0 ? rel(relDays(m.date)) : relLong(m.date)}
+                  <button class="del" aria-label="Delete" onClick=${() => { update((x) => { x.milestones = x.milestones.filter((y) => y.id !== m.id); return x; }); showUndo(`"${m.title}" removed`, () => update((x) => { x.milestones.push(m); x.milestones.sort((a, b) => a.date.localeCompare(b.date)); return x; })); }}>✕</button>
+                </p>
+              </div>`;
+          };
+          let lastYear = null;
+          const withYears = [];
+          past.forEach((m) => {
+            const y = m.date.slice(0, 4);
+            if (y !== lastYear) { withYears.push(html`<p key=${"y" + y} class="tlyear">${y}</p>`); lastYear = y; }
+            withYears.push(entry(m));
+          });
+          return html`
+            ${future.length > 0 && html`
+              <div class="tlwrap" style=${{ marginBottom: "4px" }}>
+                <span class="tlspine future"></span>
+                <p class="tlyear" style=${{ marginTop: 0 }}>still to come ✨</p>
+                ${future.map(entry)}
+              </div>`}
+            <div class="tlwrap">
+              <span class="tlspine"></span>
+              ${withYears}
+              <p style=${{ color: "#8A8371", margin: "0 0 4px", fontFamily: "Caveat, cursive", fontSize: "18px" }}>…and it all started here 💘</p>
+            </div>`;
+        })()}
         <div class="row" style=${{ marginTop: "8px" }}>
           <span style=${{ flex: 2 }}><label>What happened</label><input value=${msTitle} onInput=${(e) => setMsTitle(e.target.value)} placeholder="Said I love you, met the dogs…" /></span>
           <span><label>When</label><input type="date" value=${msDate} onInput=${(e) => setMsDate(e.target.value)} /></span>
         </div>
-        <button class="btn" style=${{ marginTop: "12px" }} onClick=${addMilestone}>Add milestone</button>
+        <button class="btn" style=${{ marginTop: "12px" }} onClick=${addMilestone}>Add to the story</button>
       </div>
 
       <div class="card">
-        <h2>Memory jar</h2>
-        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Small good moments, logged before the ADHD eats them. Future-you will love past-you for this.</p>
+        <h2>Memories</h2>
+        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Small good moments, logged before the ADHD eats them — plus everything you two have finished: dates, trips, visits. Nothing done ever disappears; it just moves in here.</p>
         <div class="row">
           <input value=${memText} onInput=${(e) => setMemText(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addMemory()} placeholder="She laughed so hard at…" />
           <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addMemory}>Jar it</button>
         </div>
-        ${(data.memories || []).map((m) => html`
-          <div key=${m.id} style=${{ padding: "10px 0", borderBottom: "1px solid #F0EBDD" }}>
-            <p style=${{ fontSize: "14px", color: "#22333B", margin: 0 }}>${m.text}</p>
-            <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
-              <${Who} who=${m.who} initialOnly /> · ${fmtDate(m.date)} · ${rel(relDays(m.date))}
-              <button class="del" aria-label="Delete" onClick=${() => { update((d) => { d.memories = d.memories.filter((x) => x.id !== m.id); return d; }); showUndo("Memory removed", () => update((d) => { d.memories.unshift(m); return d; })); }}>✕</button>
-            </p>
-          </div>`)}
+        ${(() => {
+          const ICONS = { jar: "🫙", date: "💌", trip: "✈️", visit: "🏡" };
+          const stream = [
+            ...(data.memories || []).map((m) => ({ ...m, kind: "jar", title: m.text })),
+            ...(data.archive || []).map((a) => ({ ...a, kind: a.type })),
+          ].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+          if (stream.length === 0) return html`<p class="empty">Empty jar, full future.</p>`;
+          return stream.map((m) => html`
+            <div key=${m.kind + m.id} style=${{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "10px 0", borderBottom: "1px solid #F0EBDD" }}>
+              <span class="memicon">${ICONS[m.kind] || "🫙"}</span>
+              <div style=${{ flex: 1 }}>
+                <p style=${{ fontSize: "14px", color: "#22333B", margin: 0 }}>${m.title}${m.note ? html`<span style=${{ color: "#6E6754" }}> — ${m.note}</span>` : ""}</p>
+                <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
+                  <${Who} who=${m.who} initialOnly /> · ${fmtDate(m.date)} · ${relLong(m.date)}
+                  <button class="del" aria-label="Delete" onClick=${() => {
+                    if (m.kind === "jar") { update((d) => { d.memories = d.memories.filter((x) => x.id !== m.id); return d; }); showUndo("Memory removed", () => update((d) => { d.memories.unshift({ id: m.id, text: m.title, who: m.who, date: m.date }); return d; })); }
+                    else { const orig = (data.archive || []).find((x) => x.id === m.id); update((d) => { d.archive = (d.archive || []).filter((x) => x.id !== m.id); return d; }); showUndo("Memory removed", () => update((d) => { d.archive = d.archive || []; d.archive.unshift(orig); return d; })); }
+                  }}>✕</button>
+                </p>
+              </div>
+            </div>`);
+        })()}
       </div>
     </div>`;
 }
@@ -1171,7 +1234,11 @@ function Plans({ data, update, me, showUndo, askConfirm, comments, addComment })
                 <${Who} who=${d.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${d.title}</span>
               </span>
               <span style=${{ whiteSpace: "nowrap" }}>
-                <span class=${days >= 0 && days <= 3 ? "chip soon" : "chip"}>${rel(days)} · ${fmtDate(d.date)}</span>
+                ${days < 0 ? html`
+                  <button class="ghost" title="Move to memories" onClick=${() => { update((x) => { x.dates = x.dates.filter((y) => y.id !== d.id); x.archive = x.archive || []; x.archive.unshift({ id: d.id, type: "date", title: d.title, date: d.date, who: d.who }); return x; }, `tucked "${d.title}" into memories 🫙`); showUndo(`"${d.title}" moved to memories`, () => update((x) => { x.archive = (x.archive || []).filter((y) => y.id !== d.id); x.dates.push(d); x.dates.sort((a, b) => a.date.localeCompare(b.date)); return x; })); }}>🫙 memory</button>
+                ` : html`
+                  <span class=${days >= 0 && days <= 3 ? "chip soon" : "chip"}>${rel(days)} · ${fmtDate(d.date)}</span>
+                `}
                 <button class="del" aria-label="Delete" onClick=${() => update((x) => { x.dates = x.dates.filter((y) => y.id !== d.id); return x; })}>✕</button>
               </span>
             </div>`;
@@ -1221,6 +1288,8 @@ function Plans({ data, update, me, showUndo, askConfirm, comments, addComment })
           </div>
           <${Comments} items=${comments.filter((c) => c.parentId === `trip:${t.id}`)} me=${me}
             onAdd=${(txt) => addComment(`trip:${t.id}`, txt)} />
+          ${t.status === "been there" && html`
+            <button class="ghost" style=${{ marginTop: "10px", color: "#1D5C63", borderColor: "#1D5C63" }} onClick=${() => askConfirm(`Tuck "${t.name}" into memories? The trip card retires; the memory keeps its name.`, () => { update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); d.archive = d.archive || []; d.archive.unshift({ id: t.id, type: "trip", title: t.name, note: t.when || "", date: todayStr(), who: t.addedBy }); return d; }, `tucked the ${t.name} trip into memories 🫙`); showUndo(`"${t.name}" moved to memories`, () => update((d) => { d.archive = (d.archive || []).filter((x) => x.id !== t.id); d.trips.unshift(t); return d; })); })}>🫙 tuck into memories</button>`}
           <button class="del" style=${{ marginTop: "8px" }} onClick=${() => askConfirm(`Delete trip "${t.name}"?`, () => { update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); return d; }); showUndo(`Trip "${t.name}" deleted`, () => update((d) => { d.trips.unshift(t); return d; })); })}>delete trip</button>
         </div>`)}
     </div>`;
