@@ -5,64 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="theme-color" content="#FBF8F1" />
+<meta name="theme-color" content="#171219" />
 <link rel="manifest" href="manifest.json" />
 <link rel="apple-touch-icon" href="icon-192.png" />
 <title>Us.</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Public+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap');
   * { box-sizing: border-box; }
-  body { margin: 0; background: #FBF8F1; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: radial-gradient(1200px 700px at 50% -10%, #221A26 0%, #171219 55%) fixed #171219; -webkit-tap-highlight-color: transparent; }
   #app { min-height: 100vh; max-width: 680px; margin: 0 auto; }
-  .display { font-family: 'Fraunces', serif; font-weight: 650; font-size: 26px; color: #22333B; letter-spacing: -0.01em; }
-  .eyebrow { font-family: 'Caveat', cursive; font-weight: 700; font-size: 20px; letter-spacing: 0; text-transform: none; color: #1D5C63; margin: 0; }
-  .tabs { display: flex; gap: 4px; padding: 14px 18px 0; border-bottom: 2px solid #E4DECF; overflow-x: auto; }
-  .tab { font-family: 'Public Sans', sans-serif; font-size: 14px; font-weight: 600; color: #6E6754; background: none; border: none; padding: 8px 12px 10px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
-  .tab.active { color: #1D5C63; border-bottom-color: #1D5C63; }
-  .card { background: #FFFFFF; border: 1.5px solid #E4DECF; border-radius: 2px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 8px rgba(34,51,59,0.06); border-bottom: 2px solid #E4DECF; clip-path: polygon(0% 1%,4% 0%,9% 1.4%,15% 0.2%,21% 1.6%,27% 0%,33% 1.2%,39% 0.4%,45% 1.6%,51% 0%,57% 1.4%,63% 0.2%,69% 1.6%,75% 0%,81% 1.2%,87% 0.4%,93% 1.6%,100% 0%,100% 100%,0% 100%); }
-  .ghost { background: none; border: 1.5px solid #E4DECF; border-radius: 999px; padding: 6px 12px; font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #22333B; cursor: pointer; }
+  .display { font-family: 'Fraunces', serif; font-weight: 650; font-size: 26px; color: #F2EAE0; letter-spacing: -0.01em; }
+  .eyebrow { font-family: 'Caveat', cursive; font-weight: 700; font-size: 20px; letter-spacing: 0; text-transform: none; color: #6FB3BA; margin: 0; }
+  .tabs { display: flex; gap: 4px; padding: 14px 18px 0; border-bottom: 2px solid #3A2F42; overflow-x: auto; }
+  .tab { font-family: 'Public Sans', sans-serif; font-size: 14px; font-weight: 600; color: #A99BA3; background: none; border: none; padding: 8px 12px 10px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+  .tab.active { color: #6FB3BA; border-bottom-color: #6FB3BA; }
+  .card { background: linear-gradient(180deg, #241C29 0%, #1E1722 100%); border: 1px solid #3A2F42; outline: 1px solid rgba(110,20,35,0.25); outline-offset: -5px; border-radius: 2px; padding: 16px; margin-bottom: 12px; box-shadow: 0 10px 28px rgba(0,0,0,0.55), inset 0 1px 0 rgba(242,234,224,0.04); border-bottom: 2px solid #14101A; clip-path: polygon(0% 1%,4% 0%,9% 1.4%,15% 0.2%,21% 1.6%,27% 0%,33% 1.2%,39% 0.4%,45% 1.6%,51% 0%,57% 1.4%,63% 0.2%,69% 1.6%,75% 0%,81% 1.2%,87% 0.4%,93% 1.6%,100% 0%,100% 100%,0% 100%); }
+  .ghost { background: none; border: 1.5px solid #3A2F42; border-radius: 999px; padding: 6px 12px; font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #F2EAE0; cursor: pointer; }
   .btn { background: #1D5C63; color: #FBF8F1; border: none; border-radius: 10px; padding: 10px 16px; font-family: 'Public Sans', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
-  .btn.sub { background: #EFE9DB; color: #22333B; }
+  .btn.sub { background: #2E2534; color: #F2EAE0; }
   .btn:focus-visible, .ghost:focus-visible, .tab:focus-visible { outline: 2px solid #B4552D; outline-offset: 2px; }
-  input, select, textarea { font-family: 'Public Sans', sans-serif; font-size: 15px; border: 1.5px solid #D8D2C4; border-radius: 10px; padding: 10px 12px; background: #FFF; color: #22333B; width: 100%; }
-  input:focus, select:focus, textarea:focus { outline: 2px solid #1D5C63; border-color: #1D5C63; }
-  label { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #6E6754; display: block; margin: 10px 0 4px; }
+  input, select, textarea { font-family: 'Public Sans', sans-serif; font-size: 15px; border: 1.5px solid #453A4A; border-radius: 10px; padding: 10px 12px; background: #2A2230; color: #F2EAE0; width: 100%; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid #6FB3BA; border-color: #6FB3BA; }
+  label { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #A99BA3; display: block; margin: 10px 0 4px; }
   .row { display: flex; gap: 10px; }
   .row > * { flex: 1; }
   .who { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #FFF; font-family: 'Public Sans', sans-serif; }
-  .empty { color: #6E6754; font-family: 'Public Sans', sans-serif; font-size: 14px; padding: 8px 0; }
-  h2 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 650; color: #1D5C63; margin: 4px 0 10px; letter-spacing: -0.01em; }
-  h3 { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6754; margin: 16px 0 6px; }
+  .empty { color: #A99BA3; font-family: 'Public Sans', sans-serif; font-size: 14px; padding: 8px 0; }
+  h2 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 650; color: #6FB3BA; margin: 4px 0 10px; letter-spacing: -0.01em; }
+  h3 { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #A99BA3; margin: 16px 0 6px; }
   p, li { font-family: 'Public Sans', sans-serif; }
-  .del { background: none; border: none; color: #B4552D; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px; }
-  .chip { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; color: #1D5C63; background: #E4F0EF; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .del { background: none; border: none; color: #E0715A; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px; }
+  .chip { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; color: #7FC4CB; background: #1E3438; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
   .chip.soon { color: #9A4726; background: #F7E5DC; }
-  .bignum { font-family: 'Fraunces', serif; font-weight: 650; font-size: 44px; color: #22333B; line-height: 1; }
-  .bell { position: relative; background: none; border: 1.5px solid #E4DECF; border-radius: 999px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; }
+  .bignum { font-family: 'Fraunces', serif; font-weight: 650; font-size: 44px; color: #F2EAE0; line-height: 1; }
+  .bell { position: relative; background: none; border: 1.5px solid #3A2F42; border-radius: 999px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; }
   .badge { position: absolute; top: -5px; right: -5px; background: #B4552D; color: #FFF; font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; border-radius: 999px; min-width: 17px; height: 17px; line-height: 17px; text-align: center; padding: 0 3px; }
-  .comment { border-left: 3px solid #EFE9DB; padding: 6px 0 6px 10px; margin-top: 6px; }
+  .comment { border-left: 3px solid #2E2534; padding: 6px 0 6px 10px; margin-top: 6px; }
   .tapwrap { text-align: center; padding: 18px 16px 14px; }
   .tapbtn { width: 112px; height: 112px; border-radius: 999px; border: none; cursor: pointer; font-size: 44px; line-height: 1; box-shadow: 0 3px 0 rgba(0,0,0,0.15) inset, 0 10px 22px rgba(34,51,59,0.28); transition: transform 0.12s ease; }
   .tapbtn:active { transform: scale(0.88); }
+  .tapwrap .tapbtn { box-shadow: 0 3px 0 rgba(0,0,0,0.3) inset, 0 10px 22px rgba(0,0,0,0.5), 0 0 44px rgba(217,124,82,0.28); }
   .tapbtn:focus-visible { outline: 2px solid #B4552D; outline-offset: 3px; }
   .pulse { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; animation: pulsefade 1.8s ease forwards; }
   .pulse .ring { position: absolute; width: 44px; height: 44px; border-radius: 999px; animation: ringgrow 1.6s ease-out forwards; }
   .pulse .heart { font-size: 68px; animation: heartbeat 0.9s ease-in-out 2; position: relative; }
-  .pulse .caption { font-family: 'Caveat', cursive; font-weight: 700; font-size: 26px; color: #22333B; background: #FBF8F1; padding: 6px 18px; border-radius: 999px; margin-top: 12px; box-shadow: 0 4px 14px rgba(34,51,59,0.18); position: relative; }
+  .pulse .caption { font-family: 'Caveat', cursive; font-weight: 700; font-size: 26px; color: #F2EAE0; background: #241C29; border: 1px solid #3A2F42; padding: 6px 18px; border-radius: 999px; margin-top: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; }
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 70; background: #22333B; color: #FBF8F1; border-radius: 999px; padding: 10px 8px 10px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); font-family: 'Public Sans', sans-serif; font-size: 13px; animation: toastin 0.2s ease; }
   @keyframes toastin { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
-  .toast button { background: #FBF8F1; color: #22333B; border: none; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 12px; cursor: pointer; }
+  .toast button { background: #F2EAE0; color: #22333B; border: none; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 12px; cursor: pointer; }
   @keyframes pulsefade { 0%, 72% { opacity: 1; } 100% { opacity: 0; } }
   @keyframes ringgrow { from { transform: scale(1); opacity: 0.5; } to { transform: scale(34); opacity: 0; } }
   @keyframes heartbeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.35); } 60% { transform: scale(1.08); } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } .pulse { opacity: 0.9; } }
   .tlwrap { position: relative; margin-left: 6px; padding-left: 20px; }
-  .tlspine { position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: linear-gradient(180deg, #B4552D, #1D5C63); }
-  .tlspine.future { background: none; border-left: 3px dashed #D8D2C4; }
-  .tldot { position: absolute; left: -25px; top: 10px; width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid #FBF8F1; box-shadow: 0 0 0 1.5px #E4DECF; }
-  .tlyear { font-family: 'Caveat', cursive; font-weight: 700; font-size: 22px; color: #8A8371; margin: 10px 0 2px; }
-  .tlday { display: inline-block; font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: #FBF8F1; background: #22333B; border-radius: 999px; padding: 2px 8px; margin-right: 6px; vertical-align: 1px; }
-  .memicon { display: inline-flex; width: 26px; height: 26px; border-radius: 8px; background: #F4EFE3; align-items: center; justify-content: center; font-size: 13px; flex: 0 0 auto; }
+  .tlspine { position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: linear-gradient(180deg, #1D5C63, #B4552D); box-shadow: 0 0 12px rgba(180,85,45,0.45); }
+  .tlspine.future { background: none; border-left: 3px dashed #453A4A; }
+  .tldot { position: absolute; left: -25px; top: 12px; width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid #171219; box-shadow: 0 0 0 1.5px #3A2F42; }
+  .tlyear { font-family: 'Caveat', cursive; font-weight: 700; font-size: 22px; color: #C9A227; margin: 10px 0 2px; }
+  .tlday { display: inline-block; font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: #F2EAE0; background: #6E1423; border-radius: 999px; padding: 2px 8px; margin-right: 6px; vertical-align: 1px; }
+  .memicon { display: inline-flex; width: 26px; height: 26px; border-radius: 8px; background: #2E2534; box-shadow: inset 0 0 0 1px #3A2F42; align-items: center; justify-content: center; font-size: 13px; flex: 0 0 auto; }
 </style>
 </head>
 <body>
@@ -108,8 +109,8 @@ import htm from "https://esm.sh/htm@3.1.1";
 const html = htm.bind(h);
 
 const PEOPLE = {
-  shane: { name: "Shane", color: "#1D5C63", light: "#3D8B92" },
-  molly: { name: "Molly", color: "#B4552D", light: "#D97C52" },
+  shane: { name: "Shane", color: "#6FB3BA", light: "#3D8B92" },
+  molly: { name: "Molly", color: "#E0715A", light: "#D97C52" },
 };
 
 // Cute, varied captions for the one-tap "thinking of you" — one is chosen per tap
@@ -251,7 +252,7 @@ const Stars = ({ value, onChange, color, readOnly }) => html`
     ${[1, 2, 3, 4, 5].map((n) => html`
       <button key=${n} onClick=${() => !readOnly && onChange && onChange(n === value ? 0 : n)}
         aria-label="${n} star"
-        style=${{ background: "none", border: "none", padding: 0, cursor: readOnly ? "default" : "pointer", fontSize: "18px", lineHeight: 1, color: n <= value ? color : "#D8D2C4" }}>★</button>`)}
+        style=${{ background: "none", border: "none", padding: 0, cursor: readOnly ? "default" : "pointer", fontSize: "18px", lineHeight: 1, color: n <= value ? color : "#453A4A" }}>★</button>`)}
   </span>`;
 
 const GoalFill = ({ pct, size = 96 }) => {
@@ -289,8 +290,8 @@ function Comments({ items = [], onAdd, me }) {
         <div>
           ${items.map((c) => html`
             <div key=${c.id} class="comment">
-              <p style=${{ fontSize: "13px", color: "#22333B", margin: 0 }}>${c.text}</p>
-              <p style=${{ fontSize: "11px", color: "#6E6754", margin: "2px 0 0" }}>
+              <p style=${{ fontSize: "13px", color: "#F2EAE0", margin: 0 }}>${c.text}</p>
+              <p style=${{ fontSize: "11px", color: "#A99BA3", margin: "2px 0 0" }}>
                 <${Who} who=${c.who} initialOnly /> · ${relTs(c.ts)}
               </p>
             </div>`)}
@@ -511,7 +512,7 @@ function App() {
   if (phase === "setup") return html`
     <div style=${{ padding: "48px 24px", textAlign: "center" }}>
       <h1 class="display">Us.</h1>
-      <p style=${{ color: "#5B5647", fontSize: "14px" }}>Almost there — open <code>index.html</code>, paste your Firebase config and your two Gmail addresses into the SETUP block at the top, then reload. Full steps in the README.</p>
+      <p style=${{ color: "#B7A9A0", fontSize: "14px" }}>Almost there — open <code>index.html</code>, paste your Firebase config and your two Gmail addresses into the SETUP block at the top, then reload. Full steps in the README.</p>
     </div>`;
 
   if (phase === "loading") return html`
@@ -521,18 +522,18 @@ function App() {
     <div style=${{ padding: "48px 24px", textAlign: "center" }}>
       <p class="eyebrow">an hour apart · never far</p>
       <h1 class="display" style=${{ margin: "8px 0 6px" }}>Us.</h1>
-      <p style=${{ color: "#5B5647", marginBottom: "28px", fontSize: "14px" }}>Two people, one hour of highway, zero excuses.</p>
+      <p style=${{ color: "#B7A9A0", marginBottom: "28px", fontSize: "14px" }}>Two people, one hour of highway, zero excuses.</p>
       <button class="btn" onClick=${signIn}>Sign in with Google</button>
     </div>`;
 
   if (!me) return html`
     <div style=${{ padding: "48px 24px", textAlign: "center" }}>
       <h1 class="display">Hm.</h1>
-      <p style=${{ color: "#5B5647", fontSize: "14px" }}>${user.email} isn't on the list. If it should be, add it to the EMAILS block in index.html.</p>
+      <p style=${{ color: "#B7A9A0", fontSize: "14px" }}>${user.email} isn't on the list. If it should be, add it to the EMAILS block in index.html.</p>
       <button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out</button>
     </div>`;
 
-  if (!data) return html`<div style=${{ padding: "48px 24px", textAlign: "center" }}><p class="eyebrow">signed in as ${user.email}</p><h1 class="display">Opening your hub…</h1><p style=${{ color: "#5B5647", fontSize: "14px" }}>Stuck here? This Google account may not have access to the hub.</p><button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out & try another account</button></div>`;
+  if (!data) return html`<div style=${{ padding: "48px 24px", textAlign: "center" }}><p class="eyebrow">signed in as ${user.email}</p><h1 class="display">Opening your hub…</h1><p style=${{ color: "#B7A9A0", fontSize: "14px" }}>Stuck here? This Google account may not have access to the hub.</p><button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out & try another account</button></div>`;
   const unread = activityLog.filter((a) => a.ts > lastSeen && a.who !== me).length;
 
   return html`
@@ -557,7 +558,7 @@ function App() {
         <div style=${{ position: "fixed", inset: 0, zIndex: 80, background: "rgba(34,51,59,0.4)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}
           onClick=${() => setConfirmState(null)}>
           <div class="card" style=${{ maxWidth: "340px", margin: 0 }} onClick=${(e) => e.stopPropagation()}>
-            <p style=${{ fontSize: "15px", color: "#22333B", margin: "0 0 16px" }}>${confirmState.message}</p>
+            <p style=${{ fontSize: "15px", color: "#F2EAE0", margin: "0 0 16px" }}>${confirmState.message}</p>
             <div style=${{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
               <button class="ghost" onClick=${() => setConfirmState(null)}>Cancel</button>
               <button class="btn" style=${{ background: "#B4552D" }} onClick=${() => { confirmState.onConfirm(); setConfirmState(null); }}>Delete</button>
@@ -585,11 +586,11 @@ function App() {
           </div>
           ${activityLog.length === 0 && html`<p class="empty">Quiet so far. Everything you two do shows up here.</p>`}
           ${activityLog.slice(0, 25).map((a) => html`
-            <div key=${a.id} style=${{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
-              <span style=${{ fontSize: "13px", color: "#22333B" }}>
+            <div key=${a.id} style=${{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #322939", gap: "8px" }}>
+              <span style=${{ fontSize: "13px", color: "#F2EAE0" }}>
                 <${Who} who=${a.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${a.text}</span>
               </span>
-              <span style=${{ fontSize: "12px", color: "#6E6754", whiteSpace: "nowrap" }}>${relTs(a.ts)}</span>
+              <span style=${{ fontSize: "12px", color: "#A99BA3", whiteSpace: "nowrap" }}>${relTs(a.ts)}</span>
             </div>`)}
         </div>`}
 
@@ -656,11 +657,11 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif, showUndo
       <div class="card tapwrap">
         <button class="tapbtn" style=${{ background: `radial-gradient(circle at 35% 30%, ${PEOPLE[me].light}, ${PEOPLE[me].color} 70%)`, color: "#FBF8F1" }}
           onClick=${sendTap} aria-label="Send a tap to ${partner.name}">💓</button>
-        <p style=${{ fontSize: "13px", color: "#5B5647", margin: "10px 0 0" }}>
+        <p style=${{ fontSize: "13px", color: "#B7A9A0", margin: "10px 0 0" }}>
           One tap. ${partner.name}'s phone lights up in your color.
         </p>
         ${lastTap && html`
-          <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
+          <p style=${{ fontSize: "12px", color: "#A99BA3", margin: "4px 0 0" }}>
             Last tap: ${PEOPLE[lastTap.who].name}, ${relTs(lastTap.ts)}
           </p>`}
         ${!notifOn && html`
@@ -675,10 +676,10 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif, showUndo
         </div>
         <div>
           ${visit && !visitPassed ? html`
-            <p class="bignum" style=${{ color: "#1D5C63" }}>${visitDays === 0 ? "🎉" : visitDays}</p>
+            <p class="bignum" style=${{ color: "#6FB3BA" }}>${visitDays === 0 ? "🎉" : visitDays}</p>
             <p class="eyebrow" style=${{ marginTop: "4px" }}>${visitDays === 0 ? "you're together today" : "days until you're together"}</p>
           ` : html`
-            <p class="bignum" style=${{ color: "#D8D2C4" }}>?</p>
+            <p class="bignum" style=${{ color: "#453A4A" }}>?</p>
             <p class="eyebrow" style=${{ marginTop: "4px" }}>next visit not set</p>
           `}
         </div>
@@ -690,10 +691,10 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif, showUndo
           <button class="ghost" onClick=${() => setEditingVisit(!editingVisit)}>${visit ? "change" : "set it"}</button>
         </div>
         ${visit && !editingVisit && html`
-          <p style=${{ fontSize: "14px", color: "#44403A", margin: "8px 0 0" }}>
+          <p style=${{ fontSize: "14px", color: "#CFC3BA", margin: "8px 0 0" }}>
             ${fmtDate(visit.date)} · <strong>${rel(visitDays)}</strong>
-            ${visit.note && html`<span style=${{ color: "#6E6754" }}> — ${visit.note}</span>`}
-            ${visitPassed && html`<span style=${{ color: "#B4552D" }}> · that one's past — set the next one 💛</span>`}
+            ${visit.note && html`<span style=${{ color: "#A99BA3" }}> — ${visit.note}</span>`}
+            ${visitPassed && html`<span style=${{ color: "#E0715A" }}> · that one's past — set the next one 💛</span>`}
           </p>
           ${visitPassed && html`
             <button class="ghost" style=${{ marginTop: "10px" }} onClick=${() => { const v = visit; update((d) => { d.nextVisit = null; d.archive = d.archive || []; d.archive.unshift({ id: uid(), type: "visit", title: v.note ? `Together: ${v.note}` : "A visit", date: v.date, who: me }); return d; }, "tucked a visit into memories 🫙"); showUndo("Visit saved to memories", () => update((d) => { d.archive = (d.archive || []).slice(1); d.nextVisit = v; return d; })); }}>🫙 save it as a memory</button>`}`}
@@ -712,27 +713,27 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif, showUndo
         <h2>Next 3 weeks</h2>
         ${horizon.length === 0 && html`<p class="empty">Clear horizon. Nothing due, nothing scheduled.</p>`}
         ${horizon.slice(0, 8).map((hz, i) => html`
-          <div key=${i} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
-            <span style=${{ fontSize: "14px", color: "#22333B", flex: 1 }}>${hz.label}</span>
+          <div key=${i} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #322939", gap: "8px" }}>
+            <span style=${{ fontSize: "14px", color: "#F2EAE0", flex: 1 }}>${hz.label}</span>
             <span class=${hz.days <= 3 ? "chip soon" : "chip"}>${rel(hz.days)} · ${fmtDate(hz.date)}</span>
           </div>`)}
       </div>
 
       <div class="card">
         <h2>Brain dump</h2>
-        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Catch the thought before it escapes. Sort it later. Or never.</p>
+        <p style=${{ fontSize: "13px", color: "#A99BA3", margin: "0 0 8px" }}>Catch the thought before it escapes. Sort it later. Or never.</p>
         <div class="row">
           <input value=${dump} onInput=${(e) => setDump(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addDump()} placeholder="that thing I keep forgetting to tell you…" />
           <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addDump}>Dump</button>
         </div>
         ${(inboxItems || []).map((it) => html`
-          <div key=${it.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
-            <span style=${{ fontSize: "14px", color: "#22333B" }}>
+          <div key=${it.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #322939", gap: "8px" }}>
+            <span style=${{ fontSize: "14px", color: "#F2EAE0" }}>
               <${Who} who=${it.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${it.text}</span>
             </span>
-            <span style=${{ fontSize: "12px", color: "#6E6754", whiteSpace: "nowrap" }}>
+            <span style=${{ fontSize: "12px", color: "#A99BA3", whiteSpace: "nowrap" }}>
               ${rel(relDays(it.date))}
-              <button class="del" title="Move to memories" aria-label="Move to memories" style=${{ color: "#1D5C63" }} onClick=${() => { update((d) => { d.archive = d.archive || []; d.archive.unshift({ id: it.id, type: "dump", title: it.text, date: it.date || todayStr(), who: it.who }); return d; }, `tucked a thought into memories 🫙`); deleteInboxItem(it); }}>🫙</button>
+              <button class="del" title="Move to memories" aria-label="Move to memories" style=${{ color: "#6FB3BA" }} onClick=${() => { update((d) => { d.archive = d.archive || []; d.archive.unshift({ id: it.id, type: "dump", title: it.text, date: it.date || todayStr(), who: it.who }); return d; }, `tucked a thought into memories 🫙`); deleteInboxItem(it); }}>🫙</button>
               <button class="del" aria-label="Delete" onClick=${() => deleteInboxItem(it)}>✕</button>
             </span>
           </div>`)}
@@ -777,7 +778,7 @@ function Us({ data, update, me, showUndo }) {
             <span><label>First date</label><input type="date" value=${annVal} onInput=${(e) => setAnnVal(e.target.value)} /></span>
             <button class="btn" style=${{ flex: "0 0 auto" }} onClick=${() => { update((d) => { d.anniversary = annVal; return d; }, "corrected day zero"); setAnnEdit(false); }}>Save</button>
           </div>` : html`
-          <p style=${{ fontSize: "14px", color: "#44403A", margin: "8px 0 0" }}>
+          <p style=${{ fontSize: "14px", color: "#CFC3BA", margin: "8px 0 0" }}>
             ${new Date(data.anniversary + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
             ${" "}· ${-relDays(data.anniversary)} days and counting. This date drives every counter in the app.
           </p>`}
@@ -787,19 +788,24 @@ function Us({ data, update, me, showUndo }) {
         <h2>The story of us</h2>
         ${(() => {
           const all = (data.milestones || []).slice();
+          const past = all.filter((m) => relDays(m.date) <= 0).sort((a, b) => a.date.localeCompare(b.date));
           const future = all.filter((m) => relDays(m.date) > 0).sort((a, b) => a.date.localeCompare(b.date));
-          const past = all.filter((m) => relDays(m.date) <= 0).sort((a, b) => b.date.localeCompare(a.date));
           const entry = (m) => {
             const d = dayOfUs(m.date, data.anniversary);
             return html`
-              <div key=${m.id} style=${{ position: "relative", padding: "4px 0 16px" }}>
-                <span class="tldot" style=${{ background: PEOPLE[m.who].color }}></span>
-                <p style=${{ fontSize: "15px", fontWeight: 600, color: "#22333B", margin: 0, fontFamily: "Public Sans, sans-serif" }}>${m.title}</p>
-                <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
-                  <span class="tlday">${d < 0 ? "BEFORE DAY ZERO" : d === 0 ? "DAY ZERO" : `DAY ${d}`}</span>
-                  ${fmtDate(m.date)} · ${relDays(m.date) > 0 ? rel(relDays(m.date)) : relLong(m.date)}
-                  <button class="del" aria-label="Delete" onClick=${() => { update((x) => { x.milestones = x.milestones.filter((y) => y.id !== m.id); return x; }); showUndo(`"${m.title}" removed`, () => update((x) => { x.milestones.push(m); x.milestones.sort((a, b) => a.date.localeCompare(b.date)); return x; })); }}>✕</button>
-                </p>
+              <div key=${m.id} style=${{ position: "relative", padding: "2px 0 18px", display: "flex", gap: "14px", alignItems: "baseline" }}>
+                <span class="tldot" style=${{ background: PEOPLE[m.who].color, boxShadow: `0 0 10px ${PEOPLE[m.who].light}66` }}></span>
+                <span style=${{ flex: "0 0 58px", textAlign: "right" }}>
+                  <span style=${{ display: "block", fontFamily: "Public Sans, sans-serif", fontSize: "9px", fontWeight: 700, letterSpacing: "0.14em", color: "#C9A227" }}>${d < 0 ? "BEFORE" : "DAY"}</span>
+                  <span style=${{ display: "block", fontFamily: "Fraunces, serif", fontSize: "26px", fontWeight: 650, lineHeight: 1, color: PEOPLE[m.who].light }}>${d < 0 ? "—" : d}</span>
+                </span>
+                <span style=${{ flex: 1 }}>
+                  <p style=${{ fontSize: "15px", fontWeight: 600, color: "#F2EAE0", margin: 0, fontFamily: "Public Sans, sans-serif" }}>${m.title}</p>
+                  <p style=${{ fontSize: "12px", color: "#9C8D96", margin: "3px 0 0" }}>
+                    ${fmtDate(m.date)} · ${relDays(m.date) > 0 ? rel(relDays(m.date)) : relLong(m.date)}
+                    <button class="del" aria-label="Delete" onClick=${() => { update((x) => { x.milestones = x.milestones.filter((y) => y.id !== m.id); return x; }); showUndo(`"${m.title}" removed`, () => update((x) => { x.milestones.push(m); x.milestones.sort((a, b) => a.date.localeCompare(b.date)); return x; })); }}>✕</button>
+                  </p>
+                </span>
               </div>`;
           };
           let lastYear = null;
@@ -810,17 +816,19 @@ function Us({ data, update, me, showUndo }) {
             withYears.push(entry(m));
           });
           return html`
-            ${future.length > 0 && html`
-              <div class="tlwrap" style=${{ marginBottom: "4px" }}>
-                <span class="tlspine future"></span>
-                <p class="tlyear" style=${{ marginTop: 0 }}>still to come ✨</p>
-                ${future.map(entry)}
-              </div>`}
+            <p style=${{ color: "#C9A227", margin: "0 0 6px", fontFamily: "Caveat, cursive", fontSize: "20px" }}>once upon a time… 🕯️</p>
             <div class="tlwrap">
               <span class="tlspine"></span>
               ${withYears}
-              <p style=${{ color: "#8A8371", margin: "0 0 4px", fontFamily: "Caveat, cursive", fontSize: "18px" }}>…and it all started here 💘</p>
-            </div>`;
+            </div>
+            ${future.length > 0 ? html`
+              <div class="tlwrap" style=${{ marginTop: "2px" }}>
+                <span class="tlspine future"></span>
+                <p class="tlyear" style=${{ marginTop: 0 }}>still to come ✨</p>
+                ${future.map(entry)}
+              </div>` : html`
+              <p style=${{ color: "#9C8D96", margin: "2px 0 6px 20px", fontFamily: "Caveat, cursive", fontSize: "18px" }}>…to be continued</p>`}
+        `;
         })()}
         <div class="row" style=${{ marginTop: "8px" }}>
           <span style=${{ flex: 2 }}><label>What happened</label><input value=${msTitle} onInput=${(e) => setMsTitle(e.target.value)} placeholder="Said I love you, met the dogs…" /></span>
@@ -831,7 +839,7 @@ function Us({ data, update, me, showUndo }) {
 
       <div class="card">
         <h2>Memories</h2>
-        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Small good moments, logged before the ADHD eats them — plus everything you two have finished: dates, trips, visits. Nothing done ever disappears; it just moves in here.</p>
+        <p style=${{ fontSize: "13px", color: "#A99BA3", margin: "0 0 8px" }}>Small good moments, logged before the ADHD eats them — plus everything you two have finished: dates, trips, visits. Nothing done ever disappears; it just moves in here.</p>
         <div class="row">
           <input value=${memText} onInput=${(e) => setMemText(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addMemory()} placeholder="She laughed so hard at…" />
           <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addMemory}>Jar it</button>
@@ -844,11 +852,11 @@ function Us({ data, update, me, showUndo }) {
           ].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
           if (stream.length === 0) return html`<p class="empty">Empty jar, full future.</p>`;
           return stream.map((m) => html`
-            <div key=${m.kind + m.id} style=${{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "10px 0", borderBottom: "1px solid #F0EBDD" }}>
+            <div key=${m.kind + m.id} style=${{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "10px 0", borderBottom: "1px solid #322939" }}>
               <span class="memicon">${ICONS[m.kind] || "🫙"}</span>
               <div style=${{ flex: 1 }}>
-                <p style=${{ fontSize: "14px", color: "#22333B", margin: 0 }}>${m.title}${m.note ? html`<span style=${{ color: "#6E6754" }}> — ${m.note}</span>` : ""}</p>
-                <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
+                <p style=${{ fontSize: "14px", color: "#F2EAE0", margin: 0 }}>${m.title}${m.note ? html`<span style=${{ color: "#A99BA3" }}> — ${m.note}</span>` : ""}</p>
+                <p style=${{ fontSize: "12px", color: "#A99BA3", margin: "4px 0 0" }}>
                   <${Who} who=${m.who} initialOnly /> · ${fmtDate(m.date)} · ${relLong(m.date)}
                   <button class="del" aria-label="Delete" onClick=${() => {
                     if (m.kind === "jar") { update((d) => { d.memories = d.memories.filter((x) => x.id !== m.id); return d; }); showUndo("Memory removed", () => update((d) => { d.memories.unshift({ id: m.id, text: m.title, who: m.who, date: m.date }); return d; })); }
@@ -900,9 +908,9 @@ function Money({ data, update, me, showUndo, askConfirm }) {
               <${GoalFill} pct=${pct} />
               <div style=${{ flex: 1 }}>
                 <h2 style=${{ margin: "0 0 2px" }}>${g.name}</h2>
-                <p style=${{ fontFamily: "Fraunces, serif", fontSize: "26px", fontWeight: 650, color: "#1D5C63", margin: 0 }}>${fmt$(total)}</p>
-                <p style=${{ fontSize: "13px", color: "#6E6754", margin: "2px 0 0" }}>of ${fmt$(g.target)} (${Math.round(pct * 100)}%)</p>
-                ${weeksLeft > 0 && html`<p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>~${weeksLeft} wks at ${fmt$(g.weekly)}/wk · ${eta.toLocaleDateString("en-US", { month: "short", year: "numeric" })}</p>`}
+                <p style=${{ fontFamily: "Fraunces, serif", fontSize: "26px", fontWeight: 650, color: "#6FB3BA", margin: 0 }}>${fmt$(total)}</p>
+                <p style=${{ fontSize: "13px", color: "#A99BA3", margin: "2px 0 0" }}>of ${fmt$(g.target)} (${Math.round(pct * 100)}%)</p>
+                ${weeksLeft > 0 && html`<p style=${{ fontSize: "12px", color: "#A99BA3", margin: "4px 0 0" }}>~${weeksLeft} wks at ${fmt$(g.weekly)}/wk · ${eta.toLocaleDateString("en-US", { month: "short", year: "numeric" })}</p>`}
               </div>
             </div>
             <div class="row" style=${{ marginTop: "12px" }}>
@@ -910,14 +918,14 @@ function Money({ data, update, me, showUndo, askConfirm }) {
               <button class="btn" style=${{ flex: "0 0 auto" }} onClick=${() => addDeposit(g.id)}>Log as ${PEOPLE[me].name}</button>
             </div>
             ${g.deposits.slice(0, 4).map((dep) => html`
-              <div key=${dep.id} style=${{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #F0EBDD", fontSize: "13px", fontFamily: "Public Sans, sans-serif" }}>
+              <div key=${dep.id} style=${{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #322939", fontSize: "13px", fontFamily: "Public Sans, sans-serif" }}>
                 <span><${Who} who=${dep.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${fmt$(dep.amount)}</span></span>
-                <span style=${{ color: "#6E6754" }}>
+                <span style=${{ color: "#A99BA3" }}>
                   ${rel(relDays(dep.date))}
                   <button class="del" aria-label="Delete" onClick=${() => update((d) => { const gg = d.goals.find((x) => x.id === g.id); gg.deposits = gg.deposits.filter((y) => y.id !== dep.id); return d; })}>✕</button>
                 </span>
               </div>`)}
-            ${g.deposits.length > 4 && html`<p style=${{ fontSize: "12px", color: "#6E6754", margin: "6px 0 0" }}>+ ${g.deposits.length - 4} earlier deposits</p>`}
+            ${g.deposits.length > 4 && html`<p style=${{ fontSize: "12px", color: "#A99BA3", margin: "6px 0 0" }}>+ ${g.deposits.length - 4} earlier deposits</p>`}
             <button class="del" style=${{ marginTop: "8px" }} onClick=${() => askConfirm(`Delete goal "${g.name}" and its history? This can't be undone.`, () => update((d) => { d.goals = d.goals.filter((x) => x.id !== g.id); return d; }, `deleted the goal ${g.name}`))}>delete goal</button>
           </div>`;
       })}
@@ -955,16 +963,16 @@ function Bills({ data, update, showUndo }) {
   return html`
     <div class="card">
       <h2>Joint bills</h2>
-      ${sorted.length > 0 && html`<p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>${fmt$(monthlyTotal)} / month across ${sorted.length} bill${sorted.length > 1 ? "s" : ""} — these also show on Today's horizon</p>`}
+      ${sorted.length > 0 && html`<p style=${{ fontSize: "13px", color: "#A99BA3", margin: "0 0 8px" }}>${fmt$(monthlyTotal)} / month across ${sorted.length} bill${sorted.length > 1 ? "s" : ""} — these also show on Today's horizon</p>`}
       ${sorted.length === 0 && html`<p class="empty">No bills yet. Anything you split — add it once, it reminds you forever.</p>`}
       ${sorted.map((b) => {
         const due = nextOccurrence(b.dueDay);
         const days = Math.round((due - midnight()) / 86400000);
         return html`
-          <div key=${b.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
-            <span style=${{ fontSize: "14px", color: "#22333B", fontFamily: "Public Sans, sans-serif" }}>
+          <div key=${b.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #322939", gap: "8px" }}>
+            <span style=${{ fontSize: "14px", color: "#F2EAE0", fontFamily: "Public Sans, sans-serif" }}>
               <strong>${b.name}</strong>
-              ${b.amount > 0 && html`<span style=${{ color: "#6E6754" }}> · ${fmt$(b.amount)}</span>`}
+              ${b.amount > 0 && html`<span style=${{ color: "#A99BA3" }}> · ${fmt$(b.amount)}</span>`}
               <span style=${{ marginLeft: "8px" }}><${Who} who=${b.who} /></span>
             </span>
             <span style=${{ whiteSpace: "nowrap" }}>
@@ -1039,13 +1047,13 @@ function House({ data, update, me, showUndo, askConfirm, comments, addComment })
         <h3>${title}</h3>
         ${items.length === 0 && html`<p class="empty">Nothing here yet.</p>`}
         ${items.map((c) => html`
-          <div key=${c.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
-            <span style=${{ fontSize: "15px", color: "#22333B", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${c.text}</span>
+          <div key=${c.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #322939", gap: "8px" }}>
+            <span style=${{ fontSize: "15px", color: "#F2EAE0", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${c.text}</span>
             <span style=${{ display: "flex", gap: "6px", alignItems: "center" }}>
               ${["shane", "molly"].map((w) => html`
                 <button key=${w} title="${PEOPLE[w].name} agrees"
                   onClick=${() => update((d) => { const it = d.criteria.find((x) => x.id === c.id); it[w] = !it[w]; return d; })}
-                  style=${{ width: "26px", height: "26px", borderRadius: "50%", border: `2px solid ${PEOPLE[w].color}`, background: c[w] ? PEOPLE[w].color : "transparent", color: c[w] ? "#FFF" : PEOPLE[w].color, fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>
+                  style=${{ width: "26px", height: "26px", borderRadius: "50%", border: `2px solid ${PEOPLE[w].light}`, background: c[w] ? PEOPLE[w].color : "transparent", color: c[w] ? "#FFF" : PEOPLE[w].light, fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>
                   ${PEOPLE[w].name[0]}
                 </button>`)}
               <button class="del" aria-label="Delete" onClick=${() => update((d) => { d.criteria = d.criteria.filter((x) => x.id !== c.id); return d; })}>✕</button>
@@ -1058,13 +1066,13 @@ function House({ data, update, me, showUndo, askConfirm, comments, addComment })
     <div>
       <div class="card">
         <h2>The list</h2>
-        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 4px" }}>Both circles filled = it's official.</p>
+        <p style=${{ fontSize: "13px", color: "#A99BA3", margin: "0 0 4px" }}>Both circles filled = it's official.</p>
         ${mustTotal > 0 && html`
           <div style=${{ margin: "6px 0 14px" }}>
-            <div style=${{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "#6E6754", marginBottom: "4px" }}>
+            <div style=${{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "#A99BA3", marginBottom: "4px" }}>
               <span>Must-haves agreed</span><span>${mustAgreed}/${mustTotal}</span>
             </div>
-            <div style=${{ height: "8px", borderRadius: "999px", background: "#EFE9DB", overflow: "hidden" }}>
+            <div style=${{ height: "8px", borderRadius: "999px", background: "#2E2534", overflow: "hidden" }}>
               <div style=${{ height: "100%", width: `${(mustAgreed / mustTotal) * 100}%`, background: "#1D5C63" }}></div>
             </div>
           </div>`}
@@ -1096,14 +1104,14 @@ function House({ data, update, me, showUndo, askConfirm, comments, addComment })
       ${(data.houses || []).map((hh) => {
         const both = hh.shaneRating >= 4 && hh.mollyRating >= 4;
         return html`
-          <div key=${hh.id} class="card" style=${both ? { borderColor: "#1D5C63", borderWidth: "2px" } : {}}>
+          <div key=${hh.id} class="card" style=${both ? { borderColor: "#6FB3BA", borderWidth: "2px" } : {}}>
             <div style=${{ display: "flex", justifyContent: "space-between", gap: "8px" }}>
               <div>
-                <p style=${{ fontFamily: "Fraunces, serif", fontSize: "17px", fontWeight: 650, margin: "0 0 2px", color: "#22333B" }}>${hh.address || "Untitled house"} ${both ? "🤝" : ""}</p>
-                <p style=${{ fontSize: "13px", color: "#6E6754", margin: 0 }}>
+                <p style=${{ fontFamily: "Fraunces, serif", fontSize: "17px", fontWeight: 650, margin: "0 0 2px", color: "#F2EAE0" }}>${hh.address || "Untitled house"} ${both ? "🤝" : ""}</p>
+                <p style=${{ fontSize: "13px", color: "#A99BA3", margin: 0 }}>
                   ${hh.price && html`<strong>${hh.price} · </strong>`}
                   added by ${PEOPLE[hh.addedBy].name}
-                  ${hh.link && html` · <a href=${hh.link} target="_blank" rel="noreferrer" style=${{ color: "#1D5C63" }}>listing ↗</a>`}
+                  ${hh.link && html` · <a href=${hh.link} target="_blank" rel="noreferrer" style=${{ color: "#6FB3BA" }}>listing ↗</a>`}
                 </p>
               </div>
               <select value=${hh.status}
@@ -1112,10 +1120,10 @@ function House({ data, update, me, showUndo, askConfirm, comments, addComment })
                 ${statuses.map((s) => html`<option key=${s}>${s}</option>`)}
               </select>
             </div>
-            ${hh.notes && html`<p style=${{ fontSize: "14px", color: "#44403A", margin: "8px 0 0" }}>${hh.notes}</p>`}
+            ${hh.notes && html`<p style=${{ fontSize: "14px", color: "#CFC3BA", margin: "8px 0 0" }}>${hh.notes}</p>`}
             <div style=${{ display: "flex", gap: "20px", marginTop: "10px", flexWrap: "wrap", fontFamily: "Public Sans, sans-serif" }}>
               ${["shane", "molly"].map((w) => html`
-                <span key=${w} style=${{ fontSize: "13px", color: "#6E6754" }}>
+                <span key=${w} style=${{ fontSize: "13px", color: "#A99BA3" }}>
                   ${PEOPLE[w].name}:${" "}
                   <${Stars} value=${hh[w + "Rating"]} color=${PEOPLE[w].color} readOnly=${me !== w}
                     onChange=${(v) => update((d) => { d.houses.find((x) => x.id === hh.id)[w + "Rating"] = v; return d; }, `rated ${hh.address || "a house"} ${v}★`)} />
@@ -1135,10 +1143,10 @@ function House({ data, update, me, showUndo, askConfirm, comments, addComment })
         </div>
         <div style=${{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "10px" }}>
           ${(data.board || []).map((b) => html`
-            <div key=${b.id} style=${{ border: "1.5px solid #F0EBDD", borderRadius: "10px", padding: "8px 10px" }}>
+            <div key=${b.id} style=${{ border: "1.5px solid #322939", borderRadius: "10px", padding: "8px 10px" }}>
               <${Who} who=${b.who} initialOnly />
-              ${b.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#22333B" }}>${b.text}</p>`}
-              ${b.url && html`<a href=${b.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#1D5C63", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
+              ${b.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#F2EAE0" }}>${b.text}</p>`}
+              ${b.url && html`<a href=${b.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#6FB3BA", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
               <button class="del" aria-label="Delete" onClick=${() => update((d) => { d.board = d.board.filter((x) => x.id !== b.id); return d; })}>✕</button>
             </div>`)}
         </div>
@@ -1179,16 +1187,16 @@ function StoreLists({ data, update, me, showUndo, askConfirm }) {
           <div key=${l.id} class="card">
             <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <h2 style=${{ margin: 0 }}>${l.name}</h2>
-              <span style=${{ fontSize: "12px", color: "#6E6754", fontFamily: "Public Sans, sans-serif" }}>
+              <span style=${{ fontSize: "12px", color: "#A99BA3", fontFamily: "Public Sans, sans-serif" }}>
                 ${l.items.length > 0 && `${doneCount}/${l.items.length}`}
                 <button class="del" aria-label="Delete" onClick=${() => askConfirm(`Delete list "${l.name}"?`, () => { update((d) => { d.lists = d.lists.filter((x) => x.id !== l.id); return d; }); showUndo(`List "${l.name}" deleted`, () => update((d) => { d.lists.push(l); return d; })); })}>delete</button>
               </span>
             </div>
             ${l.items.map((it) => html`
-              <div key=${it.id} style=${{ display: "flex", alignItems: "center", gap: "10px", padding: "7px 0", borderBottom: "1px solid #F0EBDD" }}>
+              <div key=${it.id} style=${{ display: "flex", alignItems: "center", gap: "10px", padding: "7px 0", borderBottom: "1px solid #322939" }}>
                 <button aria-label=${it.done ? "Mark not done" : "Mark done"}
                   onClick=${() => update((d) => { const x = d.lists.find((y) => y.id === l.id).items.find((y) => y.id === it.id); x.done = !x.done; return d; })}
-                  style=${{ width: "22px", height: "22px", borderRadius: "6px", cursor: "pointer", flexShrink: 0, border: "2px solid #1D5C63", background: it.done ? "#1D5C63" : "transparent", color: "#FFF", fontSize: "13px", lineHeight: 1 }}>
+                  style=${{ width: "22px", height: "22px", borderRadius: "6px", cursor: "pointer", flexShrink: 0, border: "2px solid #6FB3BA", background: it.done ? "#1D5C63" : "transparent", color: "#FFF", fontSize: "13px", lineHeight: 1 }}>
                   ${it.done ? "✓" : ""}
                 </button>
                 <span style=${{ fontSize: "15px", color: it.done ? "#6E6754" : "#22333B", textDecoration: it.done ? "line-through" : "none", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${it.text}</span>
@@ -1245,13 +1253,13 @@ function Plans({ data, update, me, showUndo, askConfirm, comments, addComment })
     <div>
       <div class="card">
         <h2>Shared dates</h2>
-        <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 8px" }}>Anything within 30 days also shows on Today.</p>
+        <p style=${{ fontSize: "13px", color: "#A99BA3", margin: "0 0 8px" }}>Anything within 30 days also shows on Today.</p>
         ${(data.dates || []).length === 0 && html`<p class="empty">Nothing scheduled. Yet.</p>`}
         ${(data.dates || []).map((d) => {
           const days = relDays(d.date);
           return html`
-            <div key=${d.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", opacity: days < 0 ? 0.5 : 1, gap: "8px" }}>
-              <span style=${{ fontSize: "14px", color: "#22333B", fontFamily: "Public Sans, sans-serif" }}>
+            <div key=${d.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #322939", opacity: days < 0 ? 0.5 : 1, gap: "8px" }}>
+              <span style=${{ fontSize: "14px", color: "#F2EAE0", fontFamily: "Public Sans, sans-serif" }}>
                 <${Who} who=${d.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${d.title}</span>
               </span>
               <span style=${{ whiteSpace: "nowrap" }}>
@@ -1284,8 +1292,8 @@ function Plans({ data, update, me, showUndo, askConfirm, comments, addComment })
         <div key=${t.id} class="card">
           <div style=${{ display: "flex", justifyContent: "space-between", gap: "8px", alignItems: "flex-start" }}>
             <div>
-              <p style=${{ fontFamily: "Fraunces, serif", fontSize: "17px", fontWeight: 650, margin: "0 0 2px", color: "#22333B" }}>${t.name}</p>
-              <p style=${{ fontSize: "13px", color: "#6E6754", margin: 0 }}>${t.when && `${t.when} · `}dreamed up by ${PEOPLE[t.addedBy].name}</p>
+              <p style=${{ fontFamily: "Fraunces, serif", fontSize: "17px", fontWeight: 650, margin: "0 0 2px", color: "#F2EAE0" }}>${t.name}</p>
+              <p style=${{ fontSize: "13px", color: "#A99BA3", margin: 0 }}>${t.when && `${t.when} · `}dreamed up by ${PEOPLE[t.addedBy].name}</p>
             </div>
             <select value=${t.status}
               onChange=${(e) => { const v = e.target.value; update((d) => { d.trips.find((x) => x.id === t.id).status = v; return d; }, `moved ${t.name} to "${v}"`); }}
@@ -1296,10 +1304,10 @@ function Plans({ data, update, me, showUndo, askConfirm, comments, addComment })
           ${t.pins.length > 0 && html`
             <div style=${{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "10px" }}>
               ${t.pins.map((p) => html`
-                <div key=${p.id} style=${{ border: "1.5px solid #F0EBDD", borderRadius: "10px", padding: "8px 10px" }}>
+                <div key=${p.id} style=${{ border: "1.5px solid #322939", borderRadius: "10px", padding: "8px 10px" }}>
                   <${Who} who=${p.who} initialOnly />
-                  ${p.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#22333B" }}>${p.text}</p>`}
-                  ${p.url && html`<a href=${p.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#1D5C63", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
+                  ${p.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#F2EAE0" }}>${p.text}</p>`}
+                  ${p.url && html`<a href=${p.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#6FB3BA", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
                   <button class="del" aria-label="Delete" onClick=${() => update((d) => { const x = d.trips.find((y) => y.id === t.id); x.pins = x.pins.filter((y) => y.id !== p.id); return d; })}>✕</button>
                 </div>`)}
             </div>`}
@@ -1310,7 +1318,7 @@ function Plans({ data, update, me, showUndo, askConfirm, comments, addComment })
           <${Comments} items=${comments.filter((c) => c.parentId === `trip:${t.id}`)} me=${me}
             onAdd=${(txt) => addComment(`trip:${t.id}`, txt)} />
           ${t.status === "been there" && html`
-            <button class="ghost" style=${{ marginTop: "10px", color: "#1D5C63", borderColor: "#1D5C63" }} onClick=${() => askConfirm(`Tuck "${t.name}" into memories? The trip card retires; the memory keeps its name.`, () => { update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); d.archive = d.archive || []; d.archive.unshift({ id: t.id, type: "trip", title: t.name, note: t.when || "", date: todayStr(), who: t.addedBy }); return d; }, `tucked the ${t.name} trip into memories 🫙`); showUndo(`"${t.name}" moved to memories`, () => update((d) => { d.archive = (d.archive || []).filter((x) => x.id !== t.id); d.trips.unshift(t); return d; })); })}>🫙 tuck into memories</button>`}
+            <button class="ghost" style=${{ marginTop: "10px", color: "#6FB3BA", borderColor: "#6FB3BA" }} onClick=${() => askConfirm(`Tuck "${t.name}" into memories? The trip card retires; the memory keeps its name.`, () => { update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); d.archive = d.archive || []; d.archive.unshift({ id: t.id, type: "trip", title: t.name, note: t.when || "", date: todayStr(), who: t.addedBy }); return d; }, `tucked the ${t.name} trip into memories 🫙`); showUndo(`"${t.name}" moved to memories`, () => update((d) => { d.archive = (d.archive || []).filter((x) => x.id !== t.id); d.trips.unshift(t); return d; })); })}>🫙 tuck into memories</button>`}
           <button class="del" style=${{ marginTop: "8px" }} onClick=${() => askConfirm(`Delete trip "${t.name}"?`, () => { update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); return d; }); showUndo(`Trip "${t.name}" deleted`, () => update((d) => { d.trips.unshift(t); return d; })); })}>delete trip</button>
         </div>`)}
     </div>`;
