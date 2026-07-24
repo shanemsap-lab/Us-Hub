@@ -30,13 +30,13 @@
   .row { display: flex; gap: 10px; }
   .row > * { flex: 1; }
   .who { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #FFF; font-family: 'Public Sans', sans-serif; }
-  .empty { color: #8A8371; font-family: 'Public Sans', sans-serif; font-size: 14px; padding: 8px 0; }
-  h2 { font-family: 'Caveat', cursive; font-size: 24px; font-weight: 700; color: #1D5C63; margin: 4px 0 10px; }
-  h3 { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8371; margin: 16px 0 6px; }
+  .empty { color: #6E6754; font-family: 'Public Sans', sans-serif; font-size: 14px; padding: 8px 0; }
+  h2 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 650; color: #1D5C63; margin: 4px 0 10px; letter-spacing: -0.01em; }
+  h3 { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6754; margin: 16px 0 6px; }
   p, li { font-family: 'Public Sans', sans-serif; }
   .del { background: none; border: none; color: #B4552D; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px; }
   .chip { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; color: #1D5C63; background: #E4F0EF; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
-  .chip.soon { color: #B4552D; background: #F7E5DC; }
+  .chip.soon { color: #9A4726; background: #F7E5DC; }
   .bignum { font-family: 'Fraunces', serif; font-weight: 650; font-size: 44px; color: #22333B; line-height: 1; }
   .bell { position: relative; background: none; border: 1.5px solid #E4DECF; border-radius: 999px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; }
   .badge { position: absolute; top: -5px; right: -5px; background: #B4552D; color: #FFF; font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; border-radius: 999px; min-width: 17px; height: 17px; line-height: 17px; text-align: center; padding: 0 3px; }
@@ -45,9 +45,13 @@
   .tapbtn { width: 112px; height: 112px; border-radius: 999px; border: none; cursor: pointer; font-size: 44px; line-height: 1; box-shadow: 0 3px 0 rgba(0,0,0,0.15) inset, 0 10px 22px rgba(34,51,59,0.28); transition: transform 0.12s ease; }
   .tapbtn:active { transform: scale(0.88); }
   .tapbtn:focus-visible { outline: 2px solid #B4552D; outline-offset: 3px; }
-  .pulse { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; pointer-events: none; animation: pulsefade 1.8s ease forwards; }
+  .pulse { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; animation: pulsefade 1.8s ease forwards; }
   .pulse .ring { position: absolute; width: 44px; height: 44px; border-radius: 999px; animation: ringgrow 1.6s ease-out forwards; }
   .pulse .heart { font-size: 68px; animation: heartbeat 0.9s ease-in-out 2; position: relative; }
+  .pulse .caption { font-family: 'Caveat', cursive; font-weight: 700; font-size: 26px; color: #22333B; background: #FBF8F1; padding: 6px 18px; border-radius: 999px; margin-top: 12px; box-shadow: 0 4px 14px rgba(34,51,59,0.18); position: relative; }
+  .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 70; background: #22333B; color: #FBF8F1; border-radius: 999px; padding: 10px 8px 10px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); font-family: 'Public Sans', sans-serif; font-size: 13px; animation: toastin 0.2s ease; }
+  @keyframes toastin { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  .toast button { background: #FBF8F1; color: #22333B; border: none; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 12px; cursor: pointer; }
   @keyframes pulsefade { 0%, 72% { opacity: 1; } 100% { opacity: 0; } }
   @keyframes ringgrow { from { transform: scale(1); opacity: 0.5; } to { transform: scale(34); opacity: 0; } }
   @keyframes heartbeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.35); } 60% { transform: scale(1.08); } }
@@ -77,7 +81,18 @@ const EMAILS = {
 // v2 — real push. Paste the key pair from Firebase console →
 // Project settings → Cloud Messaging → Web Push certificates.
 // Leave as-is and the app quietly skips push (taps still work in-app).
-const VAPID_KEY = "BLKzZdDUgzari4Pyteeon70jO7oiJdjl8CC-9nLsvfp_tNoON4DTZ2B2rCp84rBq4SdUiRBZty6QGM33ieV83h4";
+const VAPID_KEY = "PASTE_VAPID_KEY";
+/* Real push notifications (landing on the home screen while the app is closed)
+   need a server-side sender — a browser can't push to another closed device on
+   its own. That half lives in functions/index.js as a Cloud Function; deploy it
+   once (see the comment at the top of that file) and pushes for taps, activity,
+   and comments start working automatically. Until it's deployed, notifications
+   still work fine whenever the app is open in a foreground tab. */
+/* Security: this file has no server-side auth check beyond the EMAILS map
+   above being used client-side. Lock down Firestore itself — in the Firebase
+   console, Firestore → Rules — so only your two signed-in UIDs can read/write
+   the "hub" and "taps" collections. Without that, anyone with the URL and any
+   Google account could read or edit your data if rules are left open/test-mode. */
 /* ============================================================ */
 
 import { h, render } from "https://esm.sh/preact@10.19.6";
@@ -90,10 +105,18 @@ const PEOPLE = {
   molly: { name: "Molly", color: "#B4552D", light: "#D97C52" },
 };
 
+// Cute, varied captions for the one-tap "thinking of you" — one is chosen per tap
+// and travels with it, so both phones show/say the same line.
+const TAP_CAPTIONS = [
+  "boop! 💓", "thinking of you", "just checking in on my favorite person",
+  "sent with love, via I-95", "missing you a normal amount", "🫶 poke",
+  "you again? good.", "a little hello", "beep beep, it's your person",
+  "heart says hi", "long distance, short thought: you",
+];
+
 const SEED = {
   anniversary: "2026-03-28",
   nextVisit: null,
-  inbox: [],
   milestones: [{ id: "m1", date: "2026-03-28", title: "First date 💘", who: "shane" }],
   memories: [],
   goals: [{ id: "g1", name: "House fund", target: 15000, weekly: 101, deposits: [] }],
@@ -111,7 +134,6 @@ const SEED = {
   board: [],
   lists: [{ id: "dateideas", name: "Date ideas 💡", items: [] }],
   trips: [],
-  activity: [],
 };
 
 // ---------- helpers ----------
@@ -228,7 +250,7 @@ const GoalFill = ({ pct, size = 96 }) => {
     </svg>`;
 };
 
-// Reusable comment thread
+// Reusable comment thread — items already filtered to this parent by the caller
 function Comments({ items = [], onAdd, me }) {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -247,7 +269,7 @@ function Comments({ items = [], onAdd, me }) {
           ${items.map((c) => html`
             <div key=${c.id} class="comment">
               <p style=${{ fontSize: "13px", color: "#22333B", margin: 0 }}>${c.text}</p>
-              <p style=${{ fontSize: "11px", color: "#8A8371", margin: "2px 0 0" }}>
+              <p style=${{ fontSize: "11px", color: "#6E6754", margin: "2px 0 0" }}>
                 <${Who} who=${c.who} initialOnly /> · ${relTs(c.ts)}
               </p>
             </div>`)}
@@ -271,7 +293,15 @@ function App() {
   const [notifOn, setNotifOn] = useState(typeof Notification !== "undefined" && Notification.permission === "granted");
   const [pulse, setPulse] = useState(null);
   const [lastTap, setLastTap] = useState(null);
+  const [undo, setUndo] = useState(null);
+  const [confirmState, setConfirmState] = useState(null);
+  const [errToast, setErrToast] = useState(null);
+  const [inboxItems, setInboxItems] = useState([]);
+  const [activityLog, setActivityLog] = useState([]);
+  const [commentsAll, setCommentsAll] = useState([]);
   const pulseTimer = useRef(null);
+  const undoTimer = useRef(null);
+  const errTimer = useRef(null);
   const tapsReady = useRef(false);
   const prevActIds = useRef(new Set());
   const meRef = useRef(null);
@@ -299,27 +329,56 @@ function App() {
         return;
       }
       const d = { ...structuredClone(SEED), ...snap.data() };
-      // foreground notification for the other person's new activity
-      if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-        (d.activity || []).forEach((a) => {
-          if (!prevActIds.current.has(a.id) && prevActIds.current.size > 0 && a.who !== meRef.current) {
-            try { new Notification("Us.", { body: `${PEOPLE[a.who].name} ${a.text}` }); } catch {}
-          }
-        });
-      }
-      prevActIds.current = new Set((d.activity || []).map((a) => a.id));
       setData(d);
     });
     return unsub;
   }, [phase, me]);
 
+  // Inbox (brain dump) and activity live in their own collections, one doc per
+  // item, so two simultaneous edits merge instead of one silently clobbering
+  // the other the way a single shared "whole document" write would.
+  useEffect(() => {
+    if (phase !== "app" || !me) return;
+    const q = fb.query(fb.collection(db, "inbox"), fb.orderBy("ts", "desc"), fb.limit(60));
+    return fb.onSnapshot(q, (snap) => setInboxItems(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }))));
+  }, [phase, me]);
+
+  useEffect(() => {
+    if (phase !== "app" || !me) return;
+    const q = fb.query(fb.collection(db, "activity"), fb.orderBy("ts", "desc"), fb.limit(50));
+    const unsub = fb.onSnapshot(q, (snap) => {
+      const log = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      prevActIds.current = new Set(log.map((a) => a.id));
+      setActivityLog(log);
+    });
+    return unsub;
+  }, [phase, me]);
+
+  useEffect(() => {
+    if (phase !== "app" || !me) return;
+    return fb.onSnapshot(fb.collection(db, "comments"), (snap) => setCommentsAll(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }))));
+  }, [phase, me]);
+
   // ---- taps (v2) ----
-  const showPulse = (who) => {
+  // Buzzes THIS device only — there's no web API to trigger haptics on a remote
+  // phone directly. Android push notifications can carry a vibrate pattern;
+  // iOS Safari ignores it, so cross-device "feel it" only works with the app open.
+  const showPulse = (who, caption) => {
     clearTimeout(pulseTimer.current);
-    setPulse({ who, key: Date.now() });
+    setPulse({ who, caption, key: Date.now() });
     if (navigator.vibrate) { try { navigator.vibrate([60, 40, 60]); } catch {} }
     pulseTimer.current = setTimeout(() => setPulse(null), 1900);
   };
+
+  const showError = useCallback((message) => {
+    clearTimeout(errTimer.current);
+    setErrToast({ message, key: Date.now() });
+    errTimer.current = setTimeout(() => setErrToast(null), 5000);
+  }, []);
+
+  const askConfirm = useCallback((message, onConfirm) => {
+    setConfirmState({ message, onConfirm });
+  }, []);
 
   useEffect(() => {
     if (phase !== "app" || !me) return;
@@ -328,15 +387,21 @@ function App() {
       const t = snap.docs[0] && snap.docs[0].data();
       if (!t) { tapsReady.current = true; return; }
       setLastTap(t);
-      if (tapsReady.current && t.who !== meRef.current && Date.now() - t.ts < 90000) showPulse(t.who);
+      if (tapsReady.current && t.who !== meRef.current && Date.now() - t.ts < 90000) {
+        showPulse(t.who, t.caption);
+        // The OS-level notification for this tap is sent by the onTap Cloud
+        // Function (functions/index.js) so it reaches the home screen even
+        // when this tab is closed — no client-side Notification() call needed here.
+      }
       tapsReady.current = true;
     });
     return unsub;
   }, [phase, me]);
 
   const sendTap = () => {
-    fb.addDoc(fb.collection(db, "taps"), { who: meRef.current, ts: Date.now() });
-    showPulse(meRef.current);
+    const caption = TAP_CAPTIONS[Math.floor(Math.random() * TAP_CAPTIONS.length)];
+    fb.addDoc(fb.collection(db, "taps"), { who: meRef.current, ts: Date.now(), caption });
+    showPulse(meRef.current, caption);
   };
 
   const registerPush = useCallback(async () => {
@@ -353,21 +418,39 @@ function App() {
     if (phase === "app" && me && notifOn) registerPush();
   }, [phase, me, notifOn, registerPush]);
 
+  const logActivity = useCallback((text) => {
+    fb.addDoc(fb.collection(db, "activity"), { who: meRef.current, text, ts: Date.now() }).catch(() => {});
+  }, []);
+
+  const addInboxItem = useCallback((text) => {
+    fb.addDoc(fb.collection(db, "inbox"), { text, who: meRef.current, date: todayStr(), ts: Date.now() })
+      .catch(() => showError("Couldn't save that — check your connection and try again."));
+    logActivity(`dumped a thought: "${text.slice(0, 40)}${text.length > 40 ? "…" : ""}"`);
+  }, [logActivity, showError]);
+
+  const deleteInboxItem = useCallback((item) => {
+    fb.deleteDoc(fb.doc(db, "inbox", item.id)).catch(() => showError("Couldn't delete that — try again."));
+    showUndo("Thought cleared", () => fb.addDoc(fb.collection(db, "inbox"), { text: item.text, who: item.who, date: item.date, ts: item.ts }));
+  }, [showError]);
+
+  const addComment = useCallback((parentId, text) => {
+    fb.addDoc(fb.collection(db, "comments"), { parentId, who: meRef.current, text, ts: Date.now() })
+      .catch(() => showError("Couldn't post that comment — try again."));
+  }, [showError]);
+
   const update = useCallback((fn, actText) => {
     setData((prev) => {
       const next = fn(structuredClone(prev));
-      if (actText) {
-        next.activity = [{ id: uid(), who: meRef.current, text: actText, ts: Date.now() }, ...(next.activity || [])].slice(0, 50);
-      }
-      fb.setDoc(fb.doc(db, "hub", "main"), next);
+      fb.setDoc(fb.doc(db, "hub", "main"), next).catch(() => showError("Couldn't save that — check your connection and try again."));
       return next;
     });
-  }, []);
+    if (actText) logActivity(actText);
+  }, [showError, logActivity]);
 
   const signIn = async () => {
     const provider = new fb.GoogleAuthProvider();
     try { await fb.signInWithPopup(auth, provider); }
-    catch { try { await fb.signInWithRedirect(auth, provider); } catch (e) { alert("Sign-in failed: " + e.message); } }
+    catch { try { await fb.signInWithRedirect(auth, provider); } catch (e) { showError("Sign-in failed: " + e.message); } }
   };
 
   const openFeed = () => {
@@ -378,7 +461,7 @@ function App() {
   };
 
   const askNotif = async () => {
-    if (typeof Notification === "undefined") return alert("This browser doesn't support notifications.");
+    if (typeof Notification === "undefined") return showError("This browser doesn't support notifications.");
     const p = await Notification.requestPermission();
     setNotifOn(p === "granted");
     if (p === "granted") registerPush();
@@ -408,7 +491,8 @@ function App() {
       <button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out</button>
     </div>`;
 
-  if (!data) return html`<div style=${{ padding: "48px 24px", textAlign: "center" }}><p class="eyebrow">signed in as ${user.email}</p><h1 class="display">Opening your hub…</h1><p style=${{ color: "#5B5647", fontSize: "14px" }}>Stuck here? This Google account may not have access to the hub.</p><button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out & try another account</button></div>`; const unread = (data.activity || []).filter((a) => a.ts > lastSeen && a.who !== me).length;
+  if (!data) return html`<div style=${{ padding: "48px 24px", textAlign: "center" }}><p class="eyebrow">signed in as ${user.email}</p><h1 class="display">Opening your hub…</h1><p style=${{ color: "#5B5647", fontSize: "14px" }}>Stuck here? This Google account may not have access to the hub.</p><button class="ghost" onClick=${() => fb.signOut(auth)}>Sign out & try another account</button></div>`;
+  const unread = activityLog.filter((a) => a.ts > lastSeen && a.who !== me).length;
 
   return html`
     <div>
@@ -416,6 +500,28 @@ function App() {
         <div class="pulse" key=${pulse.key} aria-hidden="true">
           <span class="ring" style=${{ background: PEOPLE[pulse.who].color }}></span>
           <span class="heart">${pulse.who === me ? "💌" : "💓"}</span>
+          ${pulse.caption && html`<span class="caption">${pulse.caption}</span>`}
+        </div>`}
+      ${undo && html`
+        <div class="toast" key=${undo.key}>
+          <span>${undo.label}</span>
+          <button onClick=${() => { undo.restore(); setUndo(null); }}>Undo</button>
+        </div>`}
+      ${errToast && html`
+        <div class="toast" style=${{ background: "#B4552D" }} key=${errToast.key}>
+          <span>${errToast.message}</span>
+          <button onClick=${() => setErrToast(null)}>Dismiss</button>
+        </div>`}
+      ${confirmState && html`
+        <div style=${{ position: "fixed", inset: 0, zIndex: 80, background: "rgba(34,51,59,0.4)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}
+          onClick=${() => setConfirmState(null)}>
+          <div class="card" style=${{ maxWidth: "340px", margin: 0 }} onClick=${(e) => e.stopPropagation()}>
+            <p style=${{ fontSize: "15px", color: "#22333B", margin: "0 0 16px" }}>${confirmState.message}</p>
+            <div style=${{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+              <button class="ghost" onClick=${() => setConfirmState(null)}>Cancel</button>
+              <button class="btn" style=${{ background: "#B4552D" }} onClick=${() => { confirmState.onConfirm(); setConfirmState(null); }}>Delete</button>
+            </div>
+          </div>
         </div>`}
       <header style=${{ padding: "18px 18px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
@@ -436,13 +542,13 @@ function App() {
             <h2 style=${{ margin: 0 }}>What's new</h2>
             ${!notifOn && html`<button class="ghost" onClick=${askNotif}>enable alerts</button>`}
           </div>
-          ${(data.activity || []).length === 0 && html`<p class="empty">Quiet so far. Everything you two do shows up here.</p>`}
-          ${(data.activity || []).slice(0, 25).map((a) => html`
+          ${activityLog.length === 0 && html`<p class="empty">Quiet so far. Everything you two do shows up here.</p>`}
+          ${activityLog.slice(0, 25).map((a) => html`
             <div key=${a.id} style=${{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
               <span style=${{ fontSize: "13px", color: "#22333B" }}>
                 <${Who} who=${a.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${a.text}</span>
               </span>
-              <span style=${{ fontSize: "12px", color: "#8A8371", whiteSpace: "nowrap" }}>${relTs(a.ts)}</span>
+              <span style=${{ fontSize: "12px", color: "#6E6754", whiteSpace: "nowrap" }}>${relTs(a.ts)}</span>
             </div>`)}
         </div>`}
 
@@ -452,18 +558,18 @@ function App() {
       </nav>
 
       <main style=${{ padding: "16px 18px 40px" }}>
-        ${tab === "today" && html`<${Today} data=${data} update=${update} me=${me} sendTap=${sendTap} lastTap=${lastTap} notifOn=${notifOn} askNotif=${askNotif} />`}
-        ${tab === "us" && html`<${Us} data=${data} update=${update} me=${me} />`}
-        ${tab === "money" && html`<${Money} data=${data} update=${update} me=${me} />`}
-        ${tab === "house" && html`<${House} data=${data} update=${update} me=${me} />`}
-        ${tab === "lists" && html`<${StoreLists} data=${data} update=${update} me=${me} />`}
-        ${tab === "plans" && html`<${Plans} data=${data} update=${update} me=${me} />`}
+        ${tab === "today" && html`<${Today} data=${data} update=${update} me=${me} sendTap=${sendTap} lastTap=${lastTap} notifOn=${notifOn} askNotif=${askNotif} showUndo=${showUndo} inboxItems=${inboxItems} addInboxItem=${addInboxItem} deleteInboxItem=${deleteInboxItem} />`}
+        ${tab === "us" && html`<${Us} data=${data} update=${update} me=${me} showUndo=${showUndo} />`}
+        ${tab === "money" && html`<${Money} data=${data} update=${update} me=${me} showUndo=${showUndo} askConfirm=${askConfirm} />`}
+        ${tab === "house" && html`<${House} data=${data} update=${update} me=${me} showUndo=${showUndo} askConfirm=${askConfirm} comments=${commentsAll} addComment=${addComment} />`}
+        ${tab === "lists" && html`<${StoreLists} data=${data} update=${update} me=${me} showUndo=${showUndo} askConfirm=${askConfirm} />`}
+        ${tab === "plans" && html`<${Plans} data=${data} update=${update} me=${me} showUndo=${showUndo} askConfirm=${askConfirm} comments=${commentsAll} addComment=${addComment} />`}
       </main>
     </div>`;
 }
 
 // ---------- TODAY ----------
-function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif }) {
+function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif, showUndo, inboxItems, addInboxItem, deleteInboxItem }) {
   const [dump, setDump] = useState("");
   const [visitDate, setVisitDate] = useState("");
   const [visitNote, setVisitNote] = useState("");
@@ -499,8 +605,7 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif }) {
   };
   const addDump = () => {
     if (!dump.trim()) return;
-    const t = dump.trim();
-    update((d) => { d.inbox.unshift({ id: uid(), text: t, who: me, date: todayStr() }); return d; }, `dumped a thought: "${t.slice(0, 40)}${t.length > 40 ? "…" : ""}"`);
+    addInboxItem(dump.trim());
     setDump("");
   };
 
@@ -514,7 +619,7 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif }) {
           One tap. ${partner.name}'s phone lights up in your color.
         </p>
         ${lastTap && html`
-          <p style=${{ fontSize: "12px", color: "#8A8371", margin: "4px 0 0" }}>
+          <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
             Last tap: ${PEOPLE[lastTap.who].name}, ${relTs(lastTap.ts)}
           </p>`}
         ${!notifOn && html`
@@ -577,14 +682,14 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif }) {
           <input value=${dump} onInput=${(e) => setDump(e.target.value)} onKeyDown=${(e) => e.key === "Enter" && addDump()} placeholder="that thing I keep forgetting to tell you…" />
           <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${addDump}>Dump</button>
         </div>
-        ${(data.inbox || []).map((it) => html`
+        ${(inboxItems || []).map((it) => html`
           <div key=${it.id} style=${{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F0EBDD", gap: "8px" }}>
             <span style=${{ fontSize: "14px", color: "#22333B" }}>
               <${Who} who=${it.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${it.text}</span>
             </span>
-            <span style=${{ fontSize: "12px", color: "#8A8371", whiteSpace: "nowrap" }}>
+            <span style=${{ fontSize: "12px", color: "#6E6754", whiteSpace: "nowrap" }}>
               ${rel(relDays(it.date))}
-              <button class="del" onClick=${() => update((d) => { d.inbox = d.inbox.filter((x) => x.id !== it.id); return d; })}>✕</button>
+              <button class="del" aria-label="Delete" onClick=${() => deleteInboxItem(it)}>✕</button>
             </span>
           </div>`)}
       </div>
@@ -592,7 +697,7 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif }) {
 }
 
 // ---------- US ----------
-function Us({ data, update, me }) {
+function Us({ data, update, me, showUndo }) {
   const [msTitle, setMsTitle] = useState("");
   const [msDate, setMsDate] = useState("");
   const [memText, setMemText] = useState("");
@@ -612,7 +717,7 @@ function Us({ data, update, me }) {
   const addMemory = () => {
     if (!memText.trim()) return;
     const t = memText.trim();
-    update((d) => { d.memories.unshift({ id: uid(), text: t, who: me, date: todayStr() }); return d; }, "jarred a memory 🫙");
+    update((d) => { d.memories.unshift({ id: uid(), text: t, who: me, date: todayStr() }); d.memories = d.memories.slice(0, 60); return d; }, "jarred a memory 🫙");
     setMemText("");
   };
 
@@ -641,9 +746,9 @@ function Us({ data, update, me }) {
             <div key=${m.id} style=${{ position: "relative", padding: "6px 0 14px" }}>
               <span style=${{ position: "absolute", left: "-21px", top: "12px", width: "11px", height: "11px", borderRadius: "50%", background: PEOPLE[m.who].color, border: "2px solid #FBF8F1" }}></span>
               <p style=${{ fontSize: "15px", fontWeight: 600, color: "#22333B", margin: 0 }}>${m.title}</p>
-              <p style=${{ fontSize: "12px", color: "#8A8371", margin: "2px 0 0" }}>
+              <p style=${{ fontSize: "12px", color: "#6E6754", margin: "2px 0 0" }}>
                 ${new Date(m.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · ${rel(relDays(m.date))}
-                <button class="del" onClick=${() => update((d) => { d.milestones = d.milestones.filter((x) => x.id !== m.id); return d; })}>✕</button>
+                <button class="del" aria-label="Delete" onClick=${() => { update((d) => { d.milestones = d.milestones.filter((x) => x.id !== m.id); return d; }); showUndo(`"${m.title}" removed`, () => update((d) => { d.milestones.push(m); d.milestones.sort((a, b) => a.date.localeCompare(b.date)); return d; })); }}>✕</button>
               </p>
             </div>`)}
         </div>
@@ -664,9 +769,9 @@ function Us({ data, update, me }) {
         ${(data.memories || []).map((m) => html`
           <div key=${m.id} style=${{ padding: "10px 0", borderBottom: "1px solid #F0EBDD" }}>
             <p style=${{ fontSize: "14px", color: "#22333B", margin: 0 }}>${m.text}</p>
-            <p style=${{ fontSize: "12px", color: "#8A8371", margin: "4px 0 0" }}>
+            <p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>
               <${Who} who=${m.who} initialOnly /> · ${fmtDate(m.date)} · ${rel(relDays(m.date))}
-              <button class="del" onClick=${() => update((d) => { d.memories = d.memories.filter((x) => x.id !== m.id); return d; })}>✕</button>
+              <button class="del" aria-label="Delete" onClick=${() => { update((d) => { d.memories = d.memories.filter((x) => x.id !== m.id); return d; }); showUndo("Memory removed", () => update((d) => { d.memories.unshift(m); return d; })); }}>✕</button>
             </p>
           </div>`)}
       </div>
@@ -674,7 +779,7 @@ function Us({ data, update, me }) {
 }
 
 // ---------- MONEY ----------
-function Money({ data, update, me }) {
+function Money({ data, update, me, showUndo, askConfirm }) {
   const [goalForm, setGoalForm] = useState({ name: "", target: "", weekly: "" });
   const [depDrafts, setDepDrafts] = useState({});
 
@@ -713,7 +818,7 @@ function Money({ data, update, me }) {
                 <h2 style=${{ margin: "0 0 2px" }}>${g.name}</h2>
                 <p style=${{ fontFamily: "Fraunces, serif", fontSize: "26px", fontWeight: 650, color: "#1D5C63", margin: 0 }}>${fmt$(total)}</p>
                 <p style=${{ fontSize: "13px", color: "#6E6754", margin: "2px 0 0" }}>of ${fmt$(g.target)} (${Math.round(pct * 100)}%)</p>
-                ${weeksLeft > 0 && html`<p style=${{ fontSize: "12px", color: "#8A8371", margin: "4px 0 0" }}>~${weeksLeft} wks at ${fmt$(g.weekly)}/wk · ${eta.toLocaleDateString("en-US", { month: "short", year: "numeric" })}</p>`}
+                ${weeksLeft > 0 && html`<p style=${{ fontSize: "12px", color: "#6E6754", margin: "4px 0 0" }}>~${weeksLeft} wks at ${fmt$(g.weekly)}/wk · ${eta.toLocaleDateString("en-US", { month: "short", year: "numeric" })}</p>`}
               </div>
             </div>
             <div class="row" style=${{ marginTop: "12px" }}>
@@ -723,13 +828,13 @@ function Money({ data, update, me }) {
             ${g.deposits.slice(0, 4).map((dep) => html`
               <div key=${dep.id} style=${{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #F0EBDD", fontSize: "13px", fontFamily: "Public Sans, sans-serif" }}>
                 <span><${Who} who=${dep.who} initialOnly /> <span style=${{ marginLeft: "6px" }}>${fmt$(dep.amount)}</span></span>
-                <span style=${{ color: "#8A8371" }}>
+                <span style=${{ color: "#6E6754" }}>
                   ${rel(relDays(dep.date))}
-                  <button class="del" onClick=${() => update((d) => { const gg = d.goals.find((x) => x.id === g.id); gg.deposits = gg.deposits.filter((y) => y.id !== dep.id); return d; })}>✕</button>
+                  <button class="del" aria-label="Delete" onClick=${() => update((d) => { const gg = d.goals.find((x) => x.id === g.id); gg.deposits = gg.deposits.filter((y) => y.id !== dep.id); return d; })}>✕</button>
                 </span>
               </div>`)}
-            ${g.deposits.length > 4 && html`<p style=${{ fontSize: "12px", color: "#8A8371", margin: "6px 0 0" }}>+ ${g.deposits.length - 4} earlier deposits</p>`}
-            <button class="del" style=${{ marginTop: "8px" }} onClick=${() => { if (confirm(`Delete goal "${g.name}" and its history?`)) update((d) => { d.goals = d.goals.filter((x) => x.id !== g.id); return d; }, `deleted the goal ${g.name}`); }}>delete goal</button>
+            ${g.deposits.length > 4 && html`<p style=${{ fontSize: "12px", color: "#6E6754", margin: "6px 0 0" }}>+ ${g.deposits.length - 4} earlier deposits</p>`}
+            <button class="del" style=${{ marginTop: "8px" }} onClick=${() => askConfirm(`Delete goal "${g.name}" and its history? This can't be undone.`, () => update((d) => { d.goals = d.goals.filter((x) => x.id !== g.id); return d; }, `deleted the goal ${g.name}`))}>delete goal</button>
           </div>`;
       })}
 
@@ -743,12 +848,12 @@ function Money({ data, update, me }) {
         <button class="btn" style=${{ marginTop: "12px" }} onClick=${addGoal}>Add goal</button>
       </div>
 
-      <${Bills} data=${data} update=${update} />
+      <${Bills} data=${data} update=${update} showUndo=${showUndo} />
     </div>`;
 }
 
 // ---------- Bills ----------
-function Bills({ data, update }) {
+function Bills({ data, update, showUndo }) {
   const [form, setForm] = useState({ name: "", amount: "", dueDay: "1", who: "both" });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const add = () => {
@@ -780,7 +885,7 @@ function Bills({ data, update }) {
             </span>
             <span style=${{ whiteSpace: "nowrap" }}>
               <span class=${days <= 5 ? "chip soon" : "chip"}>${rel(days)} · ${due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
-              <button class="del" onClick=${() => update((d) => { d.bills = d.bills.filter((x) => x.id !== b.id); return d; })}>✕</button>
+              <button class="del" aria-label="Delete" onClick=${() => { update((d) => { d.bills = d.bills.filter((x) => x.id !== b.id); return d; }); showUndo(`"${b.name}" removed`, () => update((d) => { d.bills.push(b); return d; })); }}>✕</button>
             </span>
           </div>`;
       })}
@@ -803,7 +908,7 @@ function Bills({ data, update }) {
 }
 
 // ---------- HOUSE ----------
-function House({ data, update, me }) {
+function House({ data, update, me, showUndo, askConfirm, comments, addComment }) {
   const [text, setText] = useState("");
   const [type, setType] = useState("must");
   const [form, setForm] = useState({ address: "", link: "", price: "", notes: "" });
@@ -828,18 +933,21 @@ function House({ data, update, me }) {
   const addHouse = () => {
     if (!form.address.trim() && !form.link.trim()) return;
     const label = form.address.trim() || "a mystery house";
-    update((d) => { d.houses.unshift({ id: uid(), ...form, addedBy: me, shaneRating: 0, mollyRating: 0, status: "saved", comments: [] }); return d; }, `saved a house: ${label}`);
+    update((d) => { d.houses.unshift({ id: uid(), ...form, addedBy: me, shaneRating: 0, mollyRating: 0, status: "saved" }); return d; }, `saved a house: ${label}`);
     setForm({ address: "", link: "", price: "", notes: "" });
   };
   const addPin = () => {
     const raw = pinText.trim();
     if (!raw) return;
     const isUrl = /^https?:\/\//i.test(raw);
-    update((d) => { d.board.unshift({ id: uid(), text: isUrl ? "" : raw, url: isUrl ? raw : "", who: me }); return d; }, "pinned to the vision board");
+    update((d) => { d.board.unshift({ id: uid(), text: isUrl ? "" : raw, url: isUrl ? raw : "", who: me }); d.board = d.board.slice(0, 40); return d; }, "pinned to the vision board");
     setPinText("");
   };
 
   const statuses = ["saved", "want to see", "toured", "no"];
+  const musts = (data.criteria || []).filter((c) => c.type === "must");
+  const mustTotal = musts.length;
+  const mustAgreed = musts.filter((c) => c.shane && c.molly).length;
   const section = (t, title) => {
     const items = (data.criteria || []).filter((c) => c.type === t);
     return html`
@@ -856,7 +964,7 @@ function House({ data, update, me }) {
                   style=${{ width: "26px", height: "26px", borderRadius: "50%", border: `2px solid ${PEOPLE[w].color}`, background: c[w] ? PEOPLE[w].color : "transparent", color: c[w] ? "#FFF" : PEOPLE[w].color, fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>
                   ${PEOPLE[w].name[0]}
                 </button>`)}
-              <button class="del" onClick=${() => update((d) => { d.criteria = d.criteria.filter((x) => x.id !== c.id); return d; })}>✕</button>
+              <button class="del" aria-label="Delete" onClick=${() => update((d) => { d.criteria = d.criteria.filter((x) => x.id !== c.id); return d; })}>✕</button>
             </span>
           </div>`)}
       </div>`;
@@ -867,6 +975,15 @@ function House({ data, update, me }) {
       <div class="card">
         <h2>The list</h2>
         <p style=${{ fontSize: "13px", color: "#6E6754", margin: "0 0 4px" }}>Both circles filled = it's official.</p>
+        ${mustTotal > 0 && html`
+          <div style=${{ margin: "6px 0 14px" }}>
+            <div style=${{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "#6E6754", marginBottom: "4px" }}>
+              <span>Must-haves agreed</span><span>${mustAgreed}/${mustTotal}</span>
+            </div>
+            <div style=${{ height: "8px", borderRadius: "999px", background: "#EFE9DB", overflow: "hidden" }}>
+              <div style=${{ height: "100%", width: `${(mustAgreed / mustTotal) * 100}%`, background: "#1D5C63" }}></div>
+            </div>
+          </div>`}
         ${section("must", "Must-haves")}
         ${section("nice", "Nice-to-haves")}
         <div class="row" style=${{ marginTop: "10px" }}>
@@ -919,10 +1036,10 @@ function House({ data, update, me }) {
                   <${Stars} value=${hh[w + "Rating"]} color=${PEOPLE[w].color} readOnly=${me !== w}
                     onChange=${(v) => update((d) => { d.houses.find((x) => x.id === hh.id)[w + "Rating"] = v; return d; }, `rated ${hh.address || "a house"} ${v}★`)} />
                 </span>`)}
-              <button class="del" style=${{ marginLeft: "auto" }} onClick=${() => { if (confirm("Remove this house?")) update((d) => { d.houses = d.houses.filter((x) => x.id !== hh.id); return d; }); }}>remove</button>
+              <button class="del" style=${{ marginLeft: "auto" }} onClick=${() => askConfirm("Remove this house?", () => { update((d) => { d.houses = d.houses.filter((x) => x.id !== hh.id); return d; }); showUndo(`"${hh.address || "House"}" removed`, () => update((d) => { d.houses.unshift(hh); return d; })); })}>remove</button>
             </div>
-            <${Comments} items=${hh.comments || []} me=${me}
-              onAdd=${(t) => update((d) => { const x = d.houses.find((y) => y.id === hh.id); x.comments = [...(x.comments || []), { id: uid(), who: me, text: t, ts: Date.now() }]; return d; }, `commented on ${hh.address || "a house"}`)} />
+            <${Comments} items=${comments.filter((c) => c.parentId === `house:${hh.id}`)} me=${me}
+              onAdd=${(t) => addComment(`house:${hh.id}`, t)} />
           </div>`;
       })}
 
@@ -938,7 +1055,7 @@ function House({ data, update, me }) {
               <${Who} who=${b.who} initialOnly />
               ${b.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#22333B" }}>${b.text}</p>`}
               ${b.url && html`<a href=${b.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#1D5C63", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
-              <button class="del" onClick=${() => update((d) => { d.board = d.board.filter((x) => x.id !== b.id); return d; })}>✕</button>
+              <button class="del" aria-label="Delete" onClick=${() => update((d) => { d.board = d.board.filter((x) => x.id !== b.id); return d; })}>✕</button>
             </div>`)}
         </div>
       </div>
@@ -946,7 +1063,7 @@ function House({ data, update, me }) {
 }
 
 // ---------- LISTS ----------
-function StoreLists({ data, update, me }) {
+function StoreLists({ data, update, me, showUndo, askConfirm }) {
   const [name, setName] = useState("");
   const [drafts, setDrafts] = useState({});
 
@@ -978,9 +1095,9 @@ function StoreLists({ data, update, me }) {
           <div key=${l.id} class="card">
             <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <h2 style=${{ margin: 0 }}>${l.name}</h2>
-              <span style=${{ fontSize: "12px", color: "#8A8371", fontFamily: "Public Sans, sans-serif" }}>
+              <span style=${{ fontSize: "12px", color: "#6E6754", fontFamily: "Public Sans, sans-serif" }}>
                 ${l.items.length > 0 && `${doneCount}/${l.items.length}`}
-                <button class="del" onClick=${() => { if (confirm(`Delete list "${l.name}"?`)) update((d) => { d.lists = d.lists.filter((x) => x.id !== l.id); return d; }); }}>delete</button>
+                <button class="del" aria-label="Delete" onClick=${() => askConfirm(`Delete list "${l.name}"?`, () => { update((d) => { d.lists = d.lists.filter((x) => x.id !== l.id); return d; }); showUndo(`List "${l.name}" deleted`, () => update((d) => { d.lists.push(l); return d; })); })}>delete</button>
               </span>
             </div>
             ${l.items.map((it) => html`
@@ -990,7 +1107,7 @@ function StoreLists({ data, update, me }) {
                   style=${{ width: "22px", height: "22px", borderRadius: "6px", cursor: "pointer", flexShrink: 0, border: "2px solid #1D5C63", background: it.done ? "#1D5C63" : "transparent", color: "#FFF", fontSize: "13px", lineHeight: 1 }}>
                   ${it.done ? "✓" : ""}
                 </button>
-                <span style=${{ fontSize: "15px", color: it.done ? "#8A8371" : "#22333B", textDecoration: it.done ? "line-through" : "none", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${it.text}</span>
+                <span style=${{ fontSize: "15px", color: it.done ? "#6E6754" : "#22333B", textDecoration: it.done ? "line-through" : "none", flex: 1, fontFamily: "Public Sans, sans-serif" }}>${it.text}</span>
                 <${Who} who=${it.who} initialOnly />
               </div>`)}
             <div class="row" style=${{ marginTop: "10px" }}>
@@ -1008,13 +1125,13 @@ function StoreLists({ data, update, me }) {
 }
 
 // ---------- PLANS ----------
-function Plans({ data, update, me }) {
+function Plans({ data, update, me, showUndo, askConfirm, comments, addComment }) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [tripForm, setTripForm] = useState({ name: "", when: "" });
   const [pinDrafts, setPinDrafts] = useState({});
   const statuses = ["dreaming", "planning", "booked", "been there"];
-  const statusColor = { dreaming: "#8A8371", planning: "#1D5C63", booked: "#B4552D", "been there": "#22333B" };
+  const statusColor = { dreaming: "#6E6754", planning: "#1D5C63", booked: "#B4552D", "been there": "#22333B" };
 
   const addDate = () => {
     if (!title.trim() || !date) return;
@@ -1029,7 +1146,7 @@ function Plans({ data, update, me }) {
   const addTrip = () => {
     if (!tripForm.name.trim()) return;
     const nm = tripForm.name.trim();
-    update((d) => { d.trips.unshift({ id: uid(), name: nm, when: tripForm.when.trim(), status: "dreaming", pins: [], comments: [], addedBy: me }); return d; }, `dreamed up a trip: ${nm}`);
+    update((d) => { d.trips.unshift({ id: uid(), name: nm, when: tripForm.when.trim(), status: "dreaming", pins: [], addedBy: me }); return d; }, `dreamed up a trip: ${nm}`);
     setTripForm({ name: "", when: "" });
   };
   const addPin = (tripId, tripName) => {
@@ -1055,7 +1172,7 @@ function Plans({ data, update, me }) {
               </span>
               <span style=${{ whiteSpace: "nowrap" }}>
                 <span class=${days >= 0 && days <= 3 ? "chip soon" : "chip"}>${rel(days)} · ${fmtDate(d.date)}</span>
-                <button class="del" onClick=${() => update((x) => { x.dates = x.dates.filter((y) => y.id !== d.id); return x; })}>✕</button>
+                <button class="del" aria-label="Delete" onClick=${() => update((x) => { x.dates = x.dates.filter((y) => y.id !== d.id); return x; })}>✕</button>
               </span>
             </div>`;
         })}
@@ -1095,16 +1212,16 @@ function Plans({ data, update, me }) {
                   <${Who} who=${p.who} initialOnly />
                   ${p.text && html`<p style=${{ fontSize: "13px", margin: "6px 0 0", color: "#22333B" }}>${p.text}</p>`}
                   ${p.url && html`<a href=${p.url} target="_blank" rel="noreferrer" style=${{ fontSize: "12px", color: "#1D5C63", wordBreak: "break-all", display: "block", marginTop: "6px", fontFamily: "Public Sans, sans-serif" }}>open ↗</a>`}
-                  <button class="del" onClick=${() => update((d) => { const x = d.trips.find((y) => y.id === t.id); x.pins = x.pins.filter((y) => y.id !== p.id); return d; })}>✕</button>
+                  <button class="del" aria-label="Delete" onClick=${() => update((d) => { const x = d.trips.find((y) => y.id === t.id); x.pins = x.pins.filter((y) => y.id !== p.id); return d; })}>✕</button>
                 </div>`)}
             </div>`}
           <div class="row" style=${{ marginTop: "10px" }}>
             <input value=${pinDrafts[t.id] || ""} onInput=${(e) => setPinDrafts({ ...pinDrafts, [t.id]: e.target.value })} onKeyDown=${(e) => e.key === "Enter" && addPin(t.id, t.name)} placeholder="Pin an idea, or paste a link…" />
             <button class="btn sub" style=${{ flex: "0 0 auto" }} onClick=${() => addPin(t.id, t.name)}>Pin</button>
           </div>
-          <${Comments} items=${t.comments || []} me=${me}
-            onAdd=${(txt) => update((d) => { const x = d.trips.find((y) => y.id === t.id); x.comments = [...(x.comments || []), { id: uid(), who: me, text: txt, ts: Date.now() }]; return d; }, `commented on ${t.name}`)} />
-          <button class="del" style=${{ marginTop: "8px" }} onClick=${() => { if (confirm(`Delete trip "${t.name}"?`)) update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); return d; }); }}>delete trip</button>
+          <${Comments} items=${comments.filter((c) => c.parentId === `trip:${t.id}`)} me=${me}
+            onAdd=${(txt) => addComment(`trip:${t.id}`, txt)} />
+          <button class="del" style=${{ marginTop: "8px" }} onClick=${() => askConfirm(`Delete trip "${t.name}"?`, () => { update((d) => { d.trips = d.trips.filter((x) => x.id !== t.id); return d; }); showUndo(`Trip "${t.name}" deleted`, () => update((d) => { d.trips.unshift(t); return d; })); })}>delete trip</button>
         </div>`)}
     </div>`;
 }
