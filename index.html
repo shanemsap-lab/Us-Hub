@@ -10,16 +10,16 @@
 <link rel="apple-touch-icon" href="icon-192.png" />
 <title>Us.</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Public+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Public+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap');
   * { box-sizing: border-box; }
   body { margin: 0; background: #FBF8F1; -webkit-tap-highlight-color: transparent; }
   #app { min-height: 100vh; max-width: 680px; margin: 0 auto; }
   .display { font-family: 'Fraunces', serif; font-weight: 650; font-size: 26px; color: #22333B; letter-spacing: -0.01em; }
-  .eyebrow { font-family: 'Public Sans', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A8371; margin: 0; }
+  .eyebrow { font-family: 'Caveat', cursive; font-weight: 700; font-size: 20px; letter-spacing: 0; text-transform: none; color: #1D5C63; margin: 0; }
   .tabs { display: flex; gap: 4px; padding: 14px 18px 0; border-bottom: 2px solid #E4DECF; overflow-x: auto; }
   .tab { font-family: 'Public Sans', sans-serif; font-size: 14px; font-weight: 600; color: #6E6754; background: none; border: none; padding: 8px 12px 10px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
   .tab.active { color: #1D5C63; border-bottom-color: #1D5C63; }
-  .card { background: #FFFFFF; border: 1.5px solid #E4DECF; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .card { background: #FFFFFF; border: 1.5px solid #E4DECF; border-radius: 2px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 8px rgba(34,51,59,0.06); border-bottom: 2px solid #E4DECF; clip-path: polygon(0% 1%,4% 0%,9% 1.4%,15% 0.2%,21% 1.6%,27% 0%,33% 1.2%,39% 0.4%,45% 1.6%,51% 0%,57% 1.4%,63% 0.2%,69% 1.6%,75% 0%,81% 1.2%,87% 0.4%,93% 1.6%,100% 0%,100% 100%,0% 100%); }
   .ghost { background: none; border: 1.5px solid #E4DECF; border-radius: 999px; padding: 6px 12px; font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 600; color: #22333B; cursor: pointer; }
   .btn { background: #1D5C63; color: #FBF8F1; border: none; border-radius: 10px; padding: 10px 16px; font-family: 'Public Sans', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
   .btn.sub { background: #EFE9DB; color: #22333B; }
@@ -31,7 +31,7 @@
   .row > * { flex: 1; }
   .who { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #FFF; font-family: 'Public Sans', sans-serif; }
   .empty { color: #8A8371; font-family: 'Public Sans', sans-serif; font-size: 14px; padding: 8px 0; }
-  h2 { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 650; color: #22333B; margin: 4px 0 10px; }
+  h2 { font-family: 'Caveat', cursive; font-size: 24px; font-weight: 700; color: #1D5C63; margin: 4px 0 10px; }
   h3 { font-family: 'Public Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8371; margin: 16px 0 6px; }
   p, li { font-family: 'Public Sans', sans-serif; }
   .del { background: none; border: none; color: #B4552D; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px; }
@@ -42,7 +42,7 @@
   .badge { position: absolute; top: -5px; right: -5px; background: #B4552D; color: #FFF; font-family: 'Public Sans', sans-serif; font-size: 10px; font-weight: 700; border-radius: 999px; min-width: 17px; height: 17px; line-height: 17px; text-align: center; padding: 0 3px; }
   .comment { border-left: 3px solid #EFE9DB; padding: 6px 0 6px 10px; margin-top: 6px; }
   .tapwrap { text-align: center; padding: 18px 16px 14px; }
-  .tapbtn { width: 96px; height: 96px; border-radius: 999px; border: none; cursor: pointer; font-size: 42px; line-height: 1; box-shadow: 0 6px 18px rgba(34,51,59,0.18); transition: transform 0.12s ease; }
+  .tapbtn { width: 112px; height: 112px; border-radius: 999px; border: none; cursor: pointer; font-size: 44px; line-height: 1; box-shadow: 0 3px 0 rgba(0,0,0,0.15) inset, 0 10px 22px rgba(34,51,59,0.28); transition: transform 0.12s ease; }
   .tapbtn:active { transform: scale(0.88); }
   .tapbtn:focus-visible { outline: 2px solid #B4552D; outline-offset: 3px; }
   .pulse { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; pointer-events: none; animation: pulsefade 1.8s ease forwards; }
@@ -86,8 +86,8 @@ import htm from "https://esm.sh/htm@3.1.1";
 const html = htm.bind(h);
 
 const PEOPLE = {
-  shane: { name: "Shane", color: "#1D5C63" },
-  molly: { name: "Molly", color: "#B4552D" },
+  shane: { name: "Shane", color: "#1D5C63", light: "#3D8B92" },
+  molly: { name: "Molly", color: "#B4552D", light: "#D97C52" },
 };
 
 const SEED = {
@@ -508,7 +508,7 @@ function Today({ data, update, me, sendTap, lastTap, notifOn, askNotif }) {
   return html`
     <div>
       <div class="card tapwrap">
-        <button class="tapbtn" style=${{ background: PEOPLE[me].color, color: "#FBF8F1" }}
+        <button class="tapbtn" style=${{ background: `radial-gradient(circle at 35% 30%, ${PEOPLE[me].light}, ${PEOPLE[me].color} 70%)`, color: "#FBF8F1" }}
           onClick=${sendTap} aria-label="Send a tap to ${partner.name}">💓</button>
         <p style=${{ fontSize: "13px", color: "#5B5647", margin: "10px 0 0" }}>
           One tap. ${partner.name}'s phone lights up in your color.
